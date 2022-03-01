@@ -1,0 +1,7 @@
+{
+  "version": 2,
+  "projects": {
+    "mint-check": "apps/mint-check",
+    "mint-check-e2e": "apps/mint-check-e2e"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "root": "apps/mint-check-e2e",
+  "sourceRoot": "apps/mint-check-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/mint-check-e2e/cypress.json",
+        "devServerTarget": "mint-check:serve"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "mint-check:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/mint-check-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["mint-check"]
+}
