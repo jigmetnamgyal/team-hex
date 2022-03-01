@@ -101,18 +101,3 @@ Nx Cloud pairs with Nx in order to enable you to build and test code more rapidl
 Teams using Nx gain the advantage of building full-stack applications with their preferred framework alongside Nx’s advanced code generation and project dependency graph, plus a unified experience for both frontend and backend developers.
 
 Visit [Nx Cloud](https://nx.app/) to learn more.
-=======
-# team-hex
-So this is kind of the rough flow of the product:
-- schools sign up, get verified,
-- a platform to create NFTs but in the context of college certificates or degrees with meta data consisting of like degree name, year awarded.
-- and then a readable ID which can be used to track or pull the certificate easily and verify
-
-
-
-## Tech Stack
-- Frontend: NextJS
-- Backend: Ruby on Rails + serverless
-- Smart Contracts: hardhat, solidity, Typescript 
-- Blockchain: Polygon
->>>>>>> f6cdc5aa06336878ef78b605cb77bb73a18c8822
