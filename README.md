@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # TeamHex
 So this is kind of the rough flow of the product:
 - schools sign up, get verified,
