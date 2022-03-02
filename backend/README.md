@@ -1,24 +1,32 @@
-# README
+## Initial Setup
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+---
+### Prerequisites
 
-Things you may want to cover:
+The setups steps expect following tools installed on the system.
 
-* Ruby version
+- Git
+- Ruby 3.0.3
+- Rails 6.1.4.6
+- PostgreSQL
 
-* System dependencies
+##### 1. Install the needed gem
 
-* Configuration
+```bash
+cd backend/
+bundle install
+```
 
-* Database creation
+##### 2. Create and setup the database
 
-* Database initialization
+```bash
+bundle exec rake db:create
+bundle exec rake db:migrate
+```
 
-* How to run the test suite
+##### 3. Start server and try your services!
 
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+```bash
+rails s
+```
+---
