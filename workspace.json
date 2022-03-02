@@ -1,7 +1,7 @@
 {
   "version": 2,
   "projects": {
-    "contracts": "apps/contracts",
+    "hex-contracts": "apps/hex-contracts",
     "mint-check": "apps/mint-check",
     "mint-check-e2e": "apps/mint-check-e2e"
   }
