@@ -4,7 +4,8 @@ class User < ApplicationRecord
     :registerable,
     :recoverable,
     :rememberable,
-    :validatable
+    :validatable,
+    :passwordless_authenticatable
   )
 
   def email_required?

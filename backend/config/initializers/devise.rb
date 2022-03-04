@@ -308,11 +308,12 @@ Devise.setup do |config|
   # When set to false, does not sign a user in automatically after their password is
   # changed. Defaults to true, so a user is signed in automatically after changing a password.
   # config.sign_in_after_change_password = true
-  Devise::Strategies::Authenticatable.class_eval do
-    private
 
-    def valid_password?
-      true
-    end
-  end
 end
+
+Devise.add_module(:passwordless_authenticatable, {
+  strategy: true,
+  controller: :sessions,
+  model: 'devise/models/passwordless_authenticatable',
+  route: :session
+})
