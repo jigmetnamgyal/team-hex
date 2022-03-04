@@ -31,3 +31,10 @@ bundle exec rake db:seed
 rails s
 ```
 ---
+
+#### 3. To edit or view the application secrets (You need access to master key and it can be found in our notion):
+
+```bash
+EDITOR="vim" rails credentials:edit
+rails credentials:show
+```
