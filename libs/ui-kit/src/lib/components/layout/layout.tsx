@@ -4,9 +4,7 @@ import {
   Button,
   Collapse,
   Flex,
-  Icon,
   IconButton,
-  Link,
   Stack,
   Text,
   useBreakpointValue,
@@ -15,10 +13,10 @@ import {
 } from '@chakra-ui/react';
 import { GiHamburgerMenu as HamburgerIcon } from 'react-icons/gi';
 import { IoMdClose as CloseIcon } from 'react-icons/io';
-import { AiOutlineArrowDown, AiOutlineArrowRight } from 'react-icons/ai';
 import { ReactNode } from 'react';
 import DesktopNav from '../desktop-nav/desktop-nav';
 import { NavigationItems } from '../../models';
+import MobileNav from '../mobile-nav/mobile-nav';
 
 
 /* eslint-disable-next-line */
@@ -96,117 +94,12 @@ export function Layout({children}: LayoutProps) {
       </Flex>
 
       <Collapse in={isOpen} animateOpacity>
-        <MobileNav />
+        <MobileNav navigationItems={NAV_ITEMS} />
       </Collapse>
       {children}
     </Box>
   );
 }
-
-const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
-  return (
-    <Link
-      href={href}
-      role={'group'}
-      display={'block'}
-      p={2}
-      rounded={'md'}
-      _hover={{ bg: useColorModeValue('pink.50', 'gray.900') }}>
-      <Stack direction={'row'} align={'center'}>
-        <Box>
-          <Text
-            transition={'all .3s ease'}
-            _groupHover={{ color: 'pink.400' }}
-            fontWeight={500}>
-            {label}
-          </Text>
-          <Text fontSize={'sm'}>{subLabel}</Text>
-        </Box>
-        <Flex
-          transition={'all .3s ease'}
-          transform={'translateX(-10px)'}
-          opacity={0}
-          _groupHover={{ opacity: '100%', transform: 'translateX(0)' }}
-          justify={'flex-end'}
-          align={'center'}
-          flex={1}>
-          <Icon color={'pink.400'} w={5} h={5} as={AiOutlineArrowRight} />
-        </Flex>
-      </Stack>
-    </Link>
-  );
-};
-
-const MobileNav = () => {
-  return (
-    <Stack
-      bg={useColorModeValue('white', 'gray.800')}
-      p={4}
-      display={{ md: 'none' }}>
-      {NAV_ITEMS.map((navItem) => (
-        <MobileNavItem key={navItem.label} {...navItem} />
-      ))}
-    </Stack>
-  );
-};
-
-const MobileNavItem = ({ label, children, href }: NavItem) => {
-  const { isOpen, onToggle } = useDisclosure();
-
-  return (
-    <Stack spacing={4} onClick={children && onToggle}>
-      <Flex
-        py={2}
-        as={Link}
-        href={href ?? '#'}
-        justify={'space-between'}
-        align={'center'}
-        _hover={{
-          textDecoration: 'none'
-        }}>
-        <Text
-          fontWeight={600}
-          color={useColorModeValue('gray.600', 'gray.200')}>
-          {label}
-        </Text>
-        {children && (
-          <Icon
-            as={AiOutlineArrowDown}
-            transition={'all .25s ease-in-out'}
-            transform={isOpen ? 'rotate(180deg)' : ''}
-            w={6}
-            h={6}
-          />
-        )}
-      </Flex>
-
-      <Collapse in={isOpen} animateOpacity style={{ marginTop: '0!important' }}>
-        <Stack
-          mt={2}
-          pl={4}
-          borderLeft={1}
-          borderStyle={'solid'}
-          borderColor={useColorModeValue('gray.200', 'gray.700')}
-          align={'start'}>
-          {children &&
-          children.map((child) => (
-            <Link key={child.label} py={2} href={child.href}>
-              {child.label}
-            </Link>
-          ))}
-        </Stack>
-      </Collapse>
-    </Stack>
-  );
-};
-
-interface NavItem {
-  label: string;
-  subLabel?: string;
-  show?: boolean;
-  href?: string;
-}
-
 const NAV_ITEMS: NavigationItems= [
   {
     label: 'Inspiration',

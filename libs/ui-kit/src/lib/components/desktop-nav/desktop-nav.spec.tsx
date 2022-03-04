@@ -4,7 +4,7 @@ import DesktopNav from './desktop-nav';
 
 describe('DesktopNav', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<DesktopNav />);
+    const { baseElement } = render(<DesktopNav navigationItems={[]}/>);
     expect(baseElement).toBeTruthy();
   });
 });
