@@ -8,6 +8,9 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
+/// @title Hex Certificate Factory
+/// @author Carlo Miguel Dy
+/// @dev A university registrant and issuer of certificates via {AccessControl}
 contract HexCertificateFactory is ERC721Enumerable, AccessControl {
     using Counters for Counters.Counter;
     using Strings for uint256;
@@ -16,7 +19,10 @@ contract HexCertificateFactory is ERC721Enumerable, AccessControl {
 
     address public treasuryAddress;
 
+    string public baseURI;
+
     Counters.Counter private _tokenCounter;
+
     Counters.Counter private _registeredUniversityCounter;
 
     mapping(bytes32 => RegisteredUniveristy) private _idToUniversity;
@@ -33,7 +39,7 @@ contract HexCertificateFactory is ERC721Enumerable, AccessControl {
         address registrant;
         uint256 index;
         uint256 registeredAt;
-        string baseURI;
+        string universityBaseURI;
         bool exists;
     }
 
@@ -46,6 +52,8 @@ contract HexCertificateFactory is ERC721Enumerable, AccessControl {
         address indexed oldTreasuryAddress,
         address indexed newTreasuryAddress
     );
+
+    event BaseURIUpdated(string indexed oldBaseURI, string indexed newBaseURI);
 
     event CertificateIssued(
         address indexed receiver,
@@ -69,6 +77,12 @@ contract HexCertificateFactory is ERC721Enumerable, AccessControl {
         bytes32 indexed universityId,
         address indexed oldRegistrant,
         address indexed newRegistrant
+    );
+
+    event UniversityBaseURIUpdated(
+        bytes32 indexed universityId,
+        string oldBaseURI,
+        string newBaseURI
     );
 
     /**
@@ -153,6 +167,13 @@ contract HexCertificateFactory is ERC721Enumerable, AccessControl {
     }
 
     /**
+     * @dev Returns the total count of registered universities.
+     */
+    function getUniversityCount() external view returns (uint256) {
+        return _registeredUniversityCounter.current();
+    }
+
+    /**
      * @dev Get the university value by the given `id` param
      * @param universityId The unique identifier for a university
      */
@@ -191,12 +212,12 @@ contract HexCertificateFactory is ERC721Enumerable, AccessControl {
      * @dev Gives a university permissions to issue certificates to their students
      * @param universityId The identifier that represents a university
      * @param registrant The address that registers a university
-     * @param baseURI The baseURI for the certificate the university is issuing
+     * @param universityBaseURI The baseURI for the certificate the university is issuing
      */
     function authorizeUniversity(
         bytes32 universityId,
         address registrant,
-        string memory baseURI
+        string memory universityBaseURI
     )
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
@@ -223,7 +244,7 @@ contract HexCertificateFactory is ERC721Enumerable, AccessControl {
             registrant: registrant,
             index: registeredUniversityIndex,
             registeredAt: block.timestamp,
-            baseURI: baseURI,
+            universityBaseURI: universityBaseURI,
             exists: true
         });
 
@@ -277,6 +298,18 @@ contract HexCertificateFactory is ERC721Enumerable, AccessControl {
     }
 
     /**
+     * @dev Sets a new baseURI.
+     */
+    function setBaseURI(string memory newBaseURI)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        emit BaseURIUpdated(baseURI, newBaseURI);
+
+        baseURI = newBaseURI;
+    }
+
+    /**
      * @param _serverAddress A new server address value
      * @dev Sets a new value to `serverAddress` state property
      */
@@ -302,6 +335,19 @@ contract HexCertificateFactory is ERC721Enumerable, AccessControl {
         emit TreasuryAddressUpdated(treasuryAddress, _treasuryAddress);
 
         treasuryAddress = _treasuryAddress;
+    }
+
+    function setUniversityBaseURI(
+        bytes32 universityId,
+        string memory newBaseURI
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        emit UniversityBaseURIUpdated(
+            universityId,
+            _idToUniversity[universityId].universityBaseURI,
+            newBaseURI
+        );
+
+        _idToUniversity[universityId].universityBaseURI = newBaseURI;
     }
 
     /**
@@ -364,7 +410,7 @@ contract HexCertificateFactory is ERC721Enumerable, AccessControl {
         _tokenCounter.increment();
         uint256 tokenId = _tokenCounter.current();
         _safeMint(receiver, tokenId);
-        _setTokenURI(tokenId, _idToUniversity[universityId].baseURI);
+        _setTokenURI(tokenId, _idToUniversity[universityId].universityBaseURI);
 
         emit CertificateIssued(receiver, universityId, tokenId);
     }
@@ -418,6 +464,13 @@ contract HexCertificateFactory is ERC721Enumerable, AccessControl {
             "ERC721URIStorage: URI set of nonexistent token"
         );
         _tokenURIs[tokenId] = _tokenURI;
+    }
+
+    /**
+     * @inheritdoc ERC721
+     */
+    function _baseURI() internal view virtual override returns (string memory) {
+        return baseURI;
     }
 
     /**
