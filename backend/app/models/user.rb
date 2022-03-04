@@ -5,8 +5,12 @@ class User < ApplicationRecord
     :recoverable,
     :rememberable,
     :validatable,
-    :passwordless_authenticatable
+    :passwordless_authenticatable,
+    :jwt_authenticatable,
+    jwt_revocation_strategy: self
   )
+
+  include Devise::JWT::RevocationStrategies::JTIMatcher
 
   def email_required?
     false
