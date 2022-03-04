@@ -11,6 +11,7 @@ import {
   useColorModeValue,
   useDisclosure
 } from '@chakra-ui/react';
+import Link from 'next/link';
 import { GiHamburgerMenu as HamburgerIcon } from 'react-icons/gi';
 import { IoMdClose as CloseIcon } from 'react-icons/io';
 import { ReactNode } from 'react';
@@ -47,7 +48,7 @@ export function Layout({children, navigationItems}: LayoutProps) {
           <IconButton
             onClick={onToggle}
             icon={
-              isOpen ? <CloseIcon w={3} h={3} /> : <HamburgerIcon w={5} h={5} />
+              isOpen ? <CloseIcon size={3} /> : <HamburgerIcon size={5} />
             }
             variant={'ghost'}
             aria-label={'Toggle Navigation'}
@@ -79,18 +80,19 @@ export function Layout({children, navigationItems}: LayoutProps) {
             href={'#'}>
             Sign In
           </Button>
+          <Link href='/'>
           <Button
             display={{ base: 'none', md: 'inline-flex' }}
             fontSize={'sm'}
             fontWeight={600}
             color={'white'}
             bg={'pink.400'}
-            href={'#'}
             _hover={{
               bg: 'pink.300'
             }}>
             Sign Up
           </Button>
+          </Link>
         </Stack>
       </Flex>
 
