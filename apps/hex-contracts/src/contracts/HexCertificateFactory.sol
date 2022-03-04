@@ -275,26 +275,52 @@ contract HexCertificateFactory is ERC721Enumerable, AccessControl {
         _idToUniversity[universityId].registrant = newRegistrant;
     }
 
-    /**
-     * @dev Removes the permissions of a university for issuing certificates to students
-     * @param universityId The identifier that represents a university
-     * @param registrant The address that registers a university
-     */
-    function revokeUniversity(bytes32 universityId, address registrant)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-        validUniversityParams(universityId, registrant)
-    {
+    modifier validUniversity(bytes32 universityId, address registrant) {
         require(
             _idToUniversity[universityId].registrant == registrant,
-            "The given registrant to a registered university registrant is unmatched."
+            "The provided registrant does not match with the registrant on provided universityId."
         );
         require(
             _idToUniversity[universityId].exists == true,
             "The university isn't registered."
         );
+        _;
+    }
 
+    /**
+     * @dev Removes the permissions of a university for issuing certificates to students
+     * @param universityId The identifier that represents a university
+     * @param registrant The address that registers a university
+     */
+    function revokeUniversityAuthorization(
+        bytes32 universityId,
+        address registrant
+    )
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+        validUniversityParams(universityId, registrant)
+        validUniversity(universityId, registrant)
+    {
         _revokeRole(universityId, registrant);
+
+        emit UniversityDeregistered(universityId, registrant, msg.sender);
+    }
+
+    /**
+     * @dev Restores the permissions of a university for issuing certificates to students
+     * @param universityId The identifier that represents a university
+     * @param registrant The address that registers a university
+     */
+    function restoreUniversityAuthorization(
+        bytes32 universityId,
+        address registrant
+    )
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+        validUniversityParams(universityId, registrant)
+        validUniversity(universityId, registrant)
+    {
+        _grantRole(universityId, registrant);
 
         emit UniversityDeregistered(universityId, registrant, msg.sender);
     }
