@@ -19,7 +19,7 @@ contract HexCertificateFactory is ERC721Enumerable, AccessControl {
 
     address public treasuryAddress;
 
-    string public baseURI;
+    string public baseURI = "";
 
     Counters.Counter private _tokenCounter;
 
@@ -270,6 +270,8 @@ contract HexCertificateFactory is ERC721Enumerable, AccessControl {
             newRegistrant
         );
 
+        _revokeRole(universityId, _idToUniversity[universityId].registrant);
+        _grantRole(universityId, newRegistrant);
         _idToUniversity[universityId].registrant = newRegistrant;
     }
 
@@ -337,6 +339,11 @@ contract HexCertificateFactory is ERC721Enumerable, AccessControl {
         treasuryAddress = _treasuryAddress;
     }
 
+    /**
+     * @dev Updates the baseURI for a specific registered university
+     * @param universityId The identifier that represents a registered university
+     * @param newBaseURI The new baseURI for a university
+     */
     function setUniversityBaseURI(
         bytes32 universityId,
         string memory newBaseURI
