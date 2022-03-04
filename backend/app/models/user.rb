@@ -27,4 +27,8 @@ class User < ApplicationRecord
   def password_required?
     false
   end
+
+  def jwt_payload
+    { wallet_address: wallet_address }
+  end
 end
