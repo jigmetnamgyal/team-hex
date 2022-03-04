@@ -22,9 +22,10 @@ import MobileNav from '../mobile-nav/mobile-nav';
 /* eslint-disable-next-line */
 export interface LayoutProps {
   children: ReactNode;
+  navigationItems: NavigationItems;
 }
 
-export function Layout({children}: LayoutProps) {
+export function Layout({children, navigationItems}: LayoutProps) {
   const { isOpen, onToggle } = useDisclosure();
 
   return (
@@ -61,7 +62,7 @@ export function Layout({children}: LayoutProps) {
           </Text>
 
           <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
-            <DesktopNav navigationItems={NAV_ITEMS}/>
+            <DesktopNav navigationItems={navigationItems}/>
           </Flex>
         </Flex>
 
@@ -94,7 +95,7 @@ export function Layout({children}: LayoutProps) {
       </Flex>
 
       <Collapse in={isOpen} animateOpacity>
-        <MobileNav navigationItems={NAV_ITEMS} />
+        <MobileNav navigationItems={navigationItems} />
       </Collapse>
       {children}
     </Box>
