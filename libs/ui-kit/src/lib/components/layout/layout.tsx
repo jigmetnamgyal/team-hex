@@ -103,23 +103,5 @@ export function Layout({children, navigationItems}: LayoutProps) {
     </Box>
   );
 }
-const NAV_ITEMS: NavigationItems= [
-  {
-    label: 'Inspiration',
-    href: '#'
-  },
-  {
-    label: 'Find Work',
-    href: '#'
-  },
-  {
-    label: 'Learn Design',
-    href: '#'
-  },
-  {
-    label: 'Hire Designers',
-    href: '#'
-  }
-];
 
 export default Layout;
