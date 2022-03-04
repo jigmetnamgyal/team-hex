@@ -1,0 +1,62 @@
+{
+  "root": "apps/hex-contracts",
+  "sourceRoot": "apps/hex-contracts/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:build",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/apps/hex-contracts",
+        "main": "apps/hex-contracts/src/main.ts",
+        "tsConfig": "apps/hex-contracts/tsconfig.app.json",
+        "assets": [
+          "apps/hex-contracts/src/assets"
+        ]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/hex-contracts/src/environments/environment.ts",
+              "with": "apps/hex-contracts/src/environments/environment.prod.ts"
+            }
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/node:execute",
+      "options": {
+        "buildTarget": "hex-contracts:build"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "apps/hex-contracts/**/*.ts"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": [
+        "coverage/apps/hex-contracts"
+      ],
+      "options": {
+        "jestConfig": "apps/hex-contracts/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}
