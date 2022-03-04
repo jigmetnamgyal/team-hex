@@ -22,6 +22,7 @@ bundle install
 ```bash
 bundle exec rake db:create
 bundle exec rake db:migrate
+bundle exec rake db:seed
 ```
 
 ##### 3. Start server and try your services!
