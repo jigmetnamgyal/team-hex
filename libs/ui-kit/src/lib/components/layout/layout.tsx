@@ -7,9 +7,6 @@ import {
   Icon,
   IconButton,
   Link,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
   Stack,
   Text,
   useBreakpointValue,
@@ -17,9 +14,11 @@ import {
   useDisclosure
 } from '@chakra-ui/react';
 import { GiHamburgerMenu as HamburgerIcon } from 'react-icons/gi';
-import { IoMdClose as CloseIcon} from 'react-icons/io';
-import { AiOutlineArrowDown, AiOutlineArrowRight} from 'react-icons/ai';
+import { IoMdClose as CloseIcon } from 'react-icons/io';
+import { AiOutlineArrowDown, AiOutlineArrowRight } from 'react-icons/ai';
 import { ReactNode } from 'react';
+import DesktopNav from '../desktop-nav/desktop-nav';
+import { NavigationItems } from '../../models';
 
 
 /* eslint-disable-next-line */
@@ -64,7 +63,7 @@ export function Layout({children}: LayoutProps) {
           </Text>
 
           <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
-            <DesktopNav />
+            <DesktopNav navigationItems={NAV_ITEMS}/>
           </Flex>
         </Flex>
 
@@ -204,40 +203,18 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
 interface NavItem {
   label: string;
   subLabel?: string;
-  children?: Array<NavItem>;
+  show?: boolean;
   href?: string;
 }
 
-const NAV_ITEMS: Array<NavItem> = [
+const NAV_ITEMS: NavigationItems= [
   {
     label: 'Inspiration',
-    children: [
-      {
-        label: 'Explore Design Work',
-        subLabel: 'Trending Design to inspire you',
-        href: '#'
-      },
-      {
-        label: 'New & Noteworthy',
-        subLabel: 'Up-and-coming Designers',
-        href: '#'
-      }
-    ]
+    href: '#'
   },
   {
     label: 'Find Work',
-    children: [
-      {
-        label: 'Job Board',
-        subLabel: 'Find your dream design job',
-        href: '#'
-      },
-      {
-        label: 'Freelance Projects',
-        subLabel: 'An exclusive list for contract work',
-        href: '#'
-      }
-    ]
+    href: '#'
   },
   {
     label: 'Learn Design',
