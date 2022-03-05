@@ -6,7 +6,10 @@ export interface WalletListProps {}
 
 export function WalletList(props: WalletListProps) {
   return (
-    <SelectionBox leftIcon={<MetaMaskIcon/>} label='Connect With MetaMask' />
+    <>
+      <SelectionBox leftIcon={<MetaMaskIcon />} label='Connect With MetaMask' />
+      <SelectionBox leftIcon={<MetaMaskIcon />} label='Connect With MetaMask' />
+    </>
   );
 }
 

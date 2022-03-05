@@ -10,7 +10,7 @@ export interface SelectionBoxProps {
 
 export function SelectionBox({label, leftIcon = undefined, rightIcon = undefined}: SelectionBoxProps) {
   return (
-    <Center p={8}>
+    <Center p={1}>
       <Button
         w={'full'}
         maxW={'md'}
