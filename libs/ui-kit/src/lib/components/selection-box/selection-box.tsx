@@ -6,12 +6,14 @@ export interface SelectionBoxProps {
   label: string;
   leftIcon?: JSX.Element;
   rightIcon?: JSX.Element;
+  onButtonClick: () => void;
 }
 
-export function SelectionBox({label, leftIcon = undefined, rightIcon = undefined}: SelectionBoxProps) {
+export function SelectionBox({label, leftIcon = undefined, onButtonClick, rightIcon = undefined}: SelectionBoxProps) {
   return (
     <Center p={1}>
       <Button
+        onClick={onButtonClick}
         w={'full'}
         maxW={'md'}
         leftIcon={leftIcon}
