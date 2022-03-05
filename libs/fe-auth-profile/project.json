@@ -1,0 +1,23 @@
+{
+  "root": "libs/fe-auth-profile",
+  "sourceRoot": "libs/fe-auth-profile/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/fe-auth-profile/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/fe-auth-profile"],
+      "options": {
+        "jestConfig": "libs/fe-auth-profile/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  }
+}
