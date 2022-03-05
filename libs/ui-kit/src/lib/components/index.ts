@@ -1,2 +1,2 @@
 export * from './layout/layout';
-export * from './wallet-list/wallet-list';
+export * from './selection-box/selection-box';

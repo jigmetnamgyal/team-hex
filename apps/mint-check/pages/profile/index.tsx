@@ -1,5 +1,5 @@
 import './profile.module.scss';
-import { WalletList } from '@team-hex/ui-kit';
+import { WalletList } from '@team-hex/fe-auth-profile';
 
 /* eslint-disable-next-line */
 export interface ProfileProps {}
