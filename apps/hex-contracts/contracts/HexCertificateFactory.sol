@@ -2,7 +2,7 @@
 pragma solidity ^0.8.10;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+// import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -414,18 +414,18 @@ contract HexCertificateFactory is ERC721Enumerable, AccessControl {
         return super.tokenURI(tokenId);
     }
 
-    /**
-     * @dev Determines if the given signature is signed by `serverAddress`
-     * @param digest The abi encoded packed values for `sender` and `universityId`
-     * @param signature The generated address by the `serverAddress`
-     */
-    function validSignature(bytes32 digest, bytes memory signature)
-        public
-        view
-        returns (bool)
-    {
-        return ECDSA.recover(digest, signature) == (serverAddress);
-    }
+    // /**
+    //  * @dev Determines if the given signature is signed by `serverAddress`
+    //  * @param digest The abi encoded packed values for `sender` and `universityId`
+    //  * @param signature The generated address by the `serverAddress`
+    //  */
+    // function validSignature(bytes32 digest, bytes memory signature)
+    //     public
+    //     view
+    //     returns (bool)
+    // {
+    //     return ECDSA.recover(digest, signature) == (serverAddress);
+    // }
 
     /**
      * @dev When a university is KYC verified, then it can authorized minting certificates.
@@ -466,20 +466,20 @@ contract HexCertificateFactory is ERC721Enumerable, AccessControl {
         return erc721Enumerable || accessControl;
     }
 
-    /**
-     * @dev Packs and hashes both the `receiver` and the `universityId` params
-     * @param receiver The receiver of the certificate
-     * @param universityId The identifier that represents a registered university
-     */
-    function _hashIdentifier(address receiver, bytes32 universityId)
-        private
-        pure
-        returns (bytes32)
-    {
-        bytes32 digest = keccak256(abi.encodePacked(receiver, universityId));
+    // /**
+    //  * @dev Packs and hashes both the `receiver` and the `universityId` params
+    //  * @param receiver The receiver of the certificate
+    //  * @param universityId The identifier that represents a registered university
+    //  */
+    // function _hashIdentifier(address receiver, bytes32 universityId)
+    //     private
+    //     pure
+    //     returns (bytes32)
+    // {
+    //     bytes32 digest = keccak256(abi.encodePacked(receiver, universityId));
 
-        return ECDSA.toEthSignedMessageHash(digest);
-    }
+    //     return ECDSA.toEthSignedMessageHash(digest);
+    // }
 
     /**
      * @dev Sets `_tokenURI` as the tokenURI of `tokenId`.
