@@ -1,22 +1,27 @@
 import './wallet-list.module.scss';
-import { MetaMaskIcon, SelectionBox } from '@team-hex/ui-kit';
-import { useConnect } from 'wagmi';
+import { SelectionBox } from '@team-hex/ui-kit';
+import { Connector, useConnect } from 'wagmi';
 import { WALLET_LIST_CONSTANTS, WalletIdEnum } from '../../constants';
-import { Button } from '@chakra-ui/react';
 
 /* eslint-disable-next-line */
-export interface WalletListProps {}
+export interface WalletListProps {
+}
 
 export function WalletList(props: WalletListProps) {
   const [{ data, error }, connect] = useConnect();
+  const onConnect = async (connector: Connector<any, any>) => {
+    const {data: accountData} = await connect(connector);
+    // TODO: hit SF when Will's PR gets merged.
+    console.log(accountData);
+  };
   return (
     <>
       {data.connectors.map((connector) => (
         <SelectionBox
-          onButtonClick={() => connect(connector)}
+          onButtonClick={() => onConnect(connector)}
           key={connector.id}
           label={WALLET_LIST_CONSTANTS[connector.id]?.prompt}
-          leftIcon={WALLET_LIST_CONSTANTS[connector.id as WalletIdEnum]?.icon}/>
+          leftIcon={WALLET_LIST_CONSTANTS[connector.id as WalletIdEnum]?.icon} />
       ))}
     </>
   );
