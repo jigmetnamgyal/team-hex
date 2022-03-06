@@ -46,13 +46,13 @@ describe('HexCertificateFactory', () => {
     it('should only allow admin to mutate baseURI', async () => {
       contract = contract.connect(admin);
 
-      await contract.setBaseURI('ipfs://cid_123/');
+      await contract.setBaseURI(baseURI);
     });
 
     it('should revert when caller is not admin', async () => {
       contract = contract.connect(notAdmin);
 
-      expect(contract.setBaseURI('ipfs://cid_123/')).to.be.reverted;
+      expect(contract.setBaseURI(baseURI)).to.be.reverted;
     });
   });
 
@@ -65,7 +65,7 @@ describe('HexCertificateFactory', () => {
       );
       const payload = {
         universityId: hashedUniversityId,
-        directory: hashedUniversityId,
+        directory: `${hashedUniversityId}/`,
       };
 
       // when a university passes KYC verifiction then
@@ -102,17 +102,22 @@ describe('HexCertificateFactory', () => {
 
     it('should revert when caller is not admin', async () => {
       contract = contract.connect(notAdmin);
-      const hash = ethers.utils.solidityKeccak256(
-        ['string'],
-        ['NEW_UNIVERSITY_ID']
+      const hashedUniversityId = ethers.utils.solidityKeccak256(
+        ['string'], // since it is a string, then we hash it into bytes32 as a result
+        ['NEW_UNIVERSITY_ID'] // this can be anything, maybe generated from PostgreSQL UUID
       );
-      const universityBaseURI = 'ipfs://cid_university_123/';
+      const payload = {
+        universityId: hashedUniversityId,
+        directory: `${hashedUniversityId}/`,
+      };
 
+      // when a university passes KYC verifiction then
+      // adds a registered university on-chain
       await expect(
         contract.authorizeUniversity(
-          hash,
+          payload.universityId,
           registrant1.address,
-          universityBaseURI
+          payload.directory
         )
       ).to.be.revertedWith(
         `AccessControl: account ${notAdmin.address.toLowerCase()} is missing role ${DEFAULT_ADMIN_ROLE}`
@@ -135,8 +140,7 @@ describe('HexCertificateFactory', () => {
       const totalSupply = await contract.totalSupply();
       expect(totalSupply.toNumber()).to.be.eq(1);
 
-      const [baseURI, university] = await Promise.all([
-        contract.baseURI(),
+      const [university] = await Promise.all([
         contract.getUniversity(universityId),
       ]);
       const universityDirectory = university.directory;
@@ -154,7 +158,7 @@ describe('HexCertificateFactory', () => {
 
       expect(certificateReceiverBalance.toNumber()).to.be.eq(1);
       expect(certificateReceiverTokenURI).to.be.equal(
-        `${baseURI}${university}${tokenId.toNumber()}`
+        [baseURI, universityDirectory, tokenId.toNumber(), '.json'].join('')
       );
       expect(tokenOwner).to.be.eq(certificateReceiver1.address);
     });

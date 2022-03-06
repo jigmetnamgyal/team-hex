@@ -2,19 +2,19 @@
   "manifestVersion": "3.2",
   "admin": {
     "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
-    "txHash": "0xd32a2d9d99d788edf8324861d7ecb75dc1a6807c5d32c647cc16bc98611d916c"
+    "txHash": "0x82e4c420c741921e68e6a8a72772ae1bbdcbda15d7045df540aa13219e1276b5"
   },
   "proxies": [
     {
       "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
-      "txHash": "0x1d33aca660aa94d220f8ba19c70efd88c1f00d471065ee863fd1e62327b589e4",
+      "txHash": "0x01a9fbfd4dbe18e51bb1f819934e2ae9dd3d2362bcdcd89711bc3d8369eac830",
       "kind": "transparent"
     }
   ],
   "impls": {
-    "affc6449065247e9ed1fe47b0fcb118b9b80d298c4aff1bd55260392fb8abdd6": {
+    "ec4de414310ae0193ccd6f8ea5c7d1f798b3a6e1ebefa76808e036b3738bcf43": {
       "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-      "txHash": "0xf78660a4fce2aeb8aa7c5ce6a4117e4ba8ef1182f6587eeeb646a55dfb4bdf8a",
+      "txHash": "0xdfe111ed7b5a36ebe13777cba35b64ab1cb4b1d5eb271853f5c36b690f4ec93b",
       "layout": {
         "storage": [
           {
@@ -167,7 +167,7 @@
             "slot": "251",
             "type": "t_address",
             "contract": "HexCertificateFactory",
-            "src": "contracts/HexCertificateFactory.sol:25"
+            "src": "contracts/HexCertificateFactory.sol:23"
           },
           {
             "label": "treasuryAddress",
@@ -175,7 +175,7 @@
             "slot": "252",
             "type": "t_address",
             "contract": "HexCertificateFactory",
-            "src": "contracts/HexCertificateFactory.sol:27"
+            "src": "contracts/HexCertificateFactory.sol:25"
           },
           {
             "label": "baseURI",
@@ -183,7 +183,7 @@
             "slot": "253",
             "type": "t_string_storage",
             "contract": "HexCertificateFactory",
-            "src": "contracts/HexCertificateFactory.sol:29"
+            "src": "contracts/HexCertificateFactory.sol:27"
           },
           {
             "label": "_tokenCounter",
@@ -191,7 +191,7 @@
             "slot": "254",
             "type": "t_struct(Counter)2660_storage",
             "contract": "HexCertificateFactory",
-            "src": "contracts/HexCertificateFactory.sol:31"
+            "src": "contracts/HexCertificateFactory.sol:29"
           },
           {
             "label": "_registeredUniversityCounter",
@@ -199,15 +199,15 @@
             "slot": "255",
             "type": "t_struct(Counter)2660_storage",
             "contract": "HexCertificateFactory",
-            "src": "contracts/HexCertificateFactory.sol:33"
+            "src": "contracts/HexCertificateFactory.sol:31"
           },
           {
             "label": "_idToUniversity",
             "offset": 0,
             "slot": "256",
-            "type": "t_mapping(t_bytes32,t_struct(RegisteredUniveristy)3008_storage)",
+            "type": "t_mapping(t_bytes32,t_struct(RegisteredUniveristy)3011_storage)",
             "contract": "HexCertificateFactory",
-            "src": "contracts/HexCertificateFactory.sol:35"
+            "src": "contracts/HexCertificateFactory.sol:36"
           },
           {
             "label": "_registrantToUniversityId",
@@ -215,7 +215,7 @@
             "slot": "257",
             "type": "t_mapping(t_address,t_bytes32)",
             "contract": "HexCertificateFactory",
-            "src": "contracts/HexCertificateFactory.sol:37"
+            "src": "contracts/HexCertificateFactory.sol:41"
           },
           {
             "label": "_indexToUniversityId",
@@ -223,7 +223,7 @@
             "slot": "258",
             "type": "t_mapping(t_uint256,t_bytes32)",
             "contract": "HexCertificateFactory",
-            "src": "contracts/HexCertificateFactory.sol:39"
+            "src": "contracts/HexCertificateFactory.sol:46"
           },
           {
             "label": "_tokenURIs",
@@ -231,7 +231,7 @@
             "slot": "259",
             "type": "t_mapping(t_uint256,t_string_storage)",
             "contract": "HexCertificateFactory",
-            "src": "contracts/HexCertificateFactory.sol:42"
+            "src": "contracts/HexCertificateFactory.sol:49"
           }
         ],
         "types": {
@@ -274,7 +274,7 @@
           "t_mapping(t_address,t_uint256)": {
             "label": "mapping(address => uint256)"
           },
-          "t_mapping(t_bytes32,t_struct(RegisteredUniveristy)3008_storage)": {
+          "t_mapping(t_bytes32,t_struct(RegisteredUniveristy)3011_storage)": {
             "label": "mapping(bytes32 => struct HexCertificateFactory.RegisteredUniveristy)"
           },
           "t_mapping(t_bytes32,t_struct(RoleData)34_storage)": {
@@ -304,7 +304,7 @@
               }
             ]
           },
-          "t_struct(RegisteredUniveristy)3008_storage": {
+          "t_struct(RegisteredUniveristy)3011_storage": {
             "label": "struct HexCertificateFactory.RegisteredUniveristy",
             "members": [
               {

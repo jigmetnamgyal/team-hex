@@ -9,9 +9,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
-// import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
-
-/// @title Hex Certificate Factory
+/// @title Hex Certificate Factory - Team Hex submission for web3con hackathon
 /// @author Carlo Miguel Dy
 /// @dev A university registrant and issuer of certificates via {AccessControl}
 contract HexCertificateFactory is
@@ -32,10 +30,19 @@ contract HexCertificateFactory is
 
     Counters.Counter private _registeredUniversityCounter;
 
+    /**
+     * @dev Holds all records of registered universities.
+     */
     mapping(bytes32 => RegisteredUniveristy) private _idToUniversity;
 
+    /**
+     * @dev Keeps track of the registrant with universityId.
+     */
     mapping(address => bytes32) private _registrantToUniversityId;
 
+    /**
+     * @dev Keeps track of `universityId` by gradually incrementing index.
+     */
     mapping(uint256 => bytes32) private _indexToUniversityId;
 
     // Optional mapping for token URIs
@@ -50,46 +57,71 @@ contract HexCertificateFactory is
         bool exists;
     }
 
-    // event ServerAddressUpdated(
-    //     address indexed oldServerAddress,
-    //     address indexed newServerAddress
-    // );
-
+    /**
+     * @dev Emits when the `treasuryAddress` gets updated.
+     */
     event TreasuryAddressUpdated(
         address indexed oldTreasuryAddress,
         address indexed newTreasuryAddress
     );
 
+    /**
+     * @dev Emits when the `baseURI` gets updated.
+     */
     event BaseURIUpdated(string indexed oldBaseURI, string indexed newBaseURI);
 
+    /**
+     * @dev Emits when a certificate is issued to a `recipient`.
+     */
     event CertificateIssued(
-        address indexed receiver,
+        address indexed recipient,
         bytes32 indexed universityId,
         uint256 indexed tokenId
     );
 
+    /**
+     * @dev Emits when a new university gets registered.
+     */
     event UniversityRegistered(
         bytes32 indexed universityId,
         address indexed registrant,
         address indexed caller
     );
 
+    /**
+     * @dev Emits when a registed university gets their permissions revoked to issue certificates.
+     */
     event UniversityDeregistered(
         bytes32 indexed universityId,
         address indexed registrant,
         address indexed caller
     );
 
+    /**
+     * @dev Emits when a registrant is updated of a registered university.
+     */
     event UniversityRegistrantChanged(
         bytes32 indexed universityId,
         address indexed oldRegistrant,
         address indexed newRegistrant
     );
 
+    /**
+     * @dev Emits when a university directory gets updated.
+     */
     event UniversityDirectoryUpdated(
         bytes32 indexed universityId,
-        string oldDirectoryName,
-        string newDirectoryName
+        string oldDirectory,
+        string newDirectory
+    );
+
+    /**
+     * @dev Emits when an existing token updates their tokenURI.
+     */
+    event TokenURIUpdated(
+        uint256 indexed tokenId,
+        string indexed oldDirectory,
+        string indexed newDirectory
     );
 
     /**
@@ -105,6 +137,23 @@ contract HexCertificateFactory is
         require(
             registrant != address(0),
             "The registrant should not be an empty address."
+        );
+        _;
+    }
+
+    /**
+     * @dev Validates for the revoke/restore methods for a registered university
+     * @param universityId The unique identifier for a university
+     * @param registrant The address that is authorized to university minting
+     */
+    modifier revokeRestoreValidation(bytes32 universityId, address registrant) {
+        require(
+            _idToUniversity[universityId].registrant == registrant,
+            "The provided registrant does not match with the registrant on provided universityId."
+        );
+        require(
+            _idToUniversity[universityId].exists == true,
+            "The university isn't registered."
         );
         _;
     }
@@ -274,6 +323,19 @@ contract HexCertificateFactory is
         onlyRole(DEFAULT_ADMIN_ROLE)
         validUniversityParams(universityId, newRegistrant)
     {
+        require(
+            _registrantToUniversityId[newRegistrant] == bytes32(0),
+            "The new registrant should not have an existing university registered."
+        );
+        require(
+            _idToUniversity[universityId].exists == true,
+            "No registered university with the provided universityId."
+        );
+        require(
+            _idToUniversity[universityId].registrant != newRegistrant,
+            "Unable to update with the same registrant."
+        );
+
         emit UniversityRegistrantChanged(
             universityId,
             _idToUniversity[universityId].registrant,
@@ -282,19 +344,17 @@ contract HexCertificateFactory is
 
         _revokeRole(universityId, _idToUniversity[universityId].registrant);
         _grantRole(universityId, newRegistrant);
-        _idToUniversity[universityId].registrant = newRegistrant;
-    }
 
-    modifier validUniversity(bytes32 universityId, address registrant) {
-        require(
-            _idToUniversity[universityId].registrant == registrant,
-            "The provided registrant does not match with the registrant on provided universityId."
-        );
-        require(
-            _idToUniversity[universityId].exists == true,
-            "The university isn't registered."
-        );
-        _;
+        // detach the universityId from the previous registrant
+        _registrantToUniversityId[
+            _idToUniversity[universityId].registrant
+        ] = bytes32(0);
+
+        // attach the new registrant to the existing universityId
+        _registrantToUniversityId[newRegistrant] = universityId;
+
+        // updates the registrant from the mapping `_idToUniversity`
+        _idToUniversity[universityId].registrant = newRegistrant;
     }
 
     /**
@@ -309,7 +369,7 @@ contract HexCertificateFactory is
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
         validUniversityParams(universityId, registrant)
-        validUniversity(universityId, registrant)
+        revokeRestoreValidation(universityId, registrant)
     {
         _revokeRole(universityId, registrant);
 
@@ -328,7 +388,7 @@ contract HexCertificateFactory is
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
         validUniversityParams(universityId, registrant)
-        validUniversity(universityId, registrant)
+        revokeRestoreValidation(universityId, registrant)
     {
         _grantRole(universityId, registrant);
 
@@ -347,19 +407,17 @@ contract HexCertificateFactory is
         baseURI = newBaseURI;
     }
 
-    // /**
-    //  * @param _serverAddress A new server address value
-    //  * @dev Sets a new value to `serverAddress` state property
-    //  */
-    // function setServerAddress(address _serverAddress)
-    //     external
-    //     onlyRole(DEFAULT_ADMIN_ROLE)
-    //     validAddress(_serverAddress)
-    // {
-    //     emit ServerAddressUpdated(serverAddress, _serverAddress);
+    /**
+     * @dev Updates the directory for an existing token.
+     */
+    function setTokenURI(uint256 tokenId, string memory newDirectory)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        emit TokenURIUpdated(tokenId, _tokenURIs[tokenId], newDirectory);
 
-    //     serverAddress = _serverAddress;
-    // }
+        _setTokenURI(tokenId, newDirectory);
+    }
 
     /**
      * @param _treasuryAddress A new server address value
@@ -395,6 +453,9 @@ contract HexCertificateFactory is
 
     /**
      * @dev See {IERC721Metadata-tokenURI}.
+     *
+     * The implementation of this method was taken from {ERC721URIStorage} but
+     * made tweakings as necessary to the use case.
      */
     function tokenURI(uint256 tokenId)
         public
@@ -415,33 +476,29 @@ contract HexCertificateFactory is
         if (bytes(base).length == 0) {
             return _tokenURI;
         }
+
         // If both are set, concatenate the baseURI and tokenURI (via abi.encodePacked).
         if (bytes(_tokenURI).length > 0) {
             return
-                string(abi.encodePacked(base, _tokenURI, tokenId.toString()));
+                string(
+                    abi.encodePacked(
+                        base,
+                        _tokenURI,
+                        tokenId.toString(),
+                        ".json"
+                    )
+                );
         }
 
         return super.tokenURI(tokenId);
     }
 
-    // /**
-    //  * @dev Determines if the given signature is signed by `serverAddress`
-    //  * @param digest The abi encoded packed values for `sender` and `universityId`
-    //  * @param signature The generated address by the `serverAddress`
-    //  */
-    // function validSignature(bytes32 digest, bytes memory signature)
-    //     public
-    //     view
-    //     returns (bool)
-    // {
-    //     return ECDSA.recover(digest, signature) == (serverAddress);
-    // }
-
     /**
      * @dev When a university is KYC verified, then it can authorized minting certificates.
      * @param universityId The registered university
+     * @param recipient The address that will receive the minted NFT
      */
-    function issueCertificate(bytes32 universityId, address receiver)
+    function issueCertificate(bytes32 universityId, address recipient)
         external
         onlyRole(universityId)
     {
@@ -452,10 +509,10 @@ contract HexCertificateFactory is
 
         _tokenCounter.increment();
         uint256 tokenId = _tokenCounter.current();
-        _safeMint(receiver, tokenId);
+        _safeMint(recipient, tokenId);
         _setTokenURI(tokenId, _idToUniversity[universityId].directory);
 
-        emit CertificateIssued(receiver, universityId, tokenId);
+        emit CertificateIssued(recipient, universityId, tokenId);
     }
 
     /**
@@ -478,21 +535,6 @@ contract HexCertificateFactory is
 
         return erc721Enumerable || accessControl;
     }
-
-    // /**
-    //  * @dev Packs and hashes both the `receiver` and the `universityId` params
-    //  * @param receiver The receiver of the certificate
-    //  * @param universityId The identifier that represents a registered university
-    //  */
-    // function _hashIdentifier(address receiver, bytes32 universityId)
-    //     private
-    //     pure
-    //     returns (bytes32)
-    // {
-    //     bytes32 digest = keccak256(abi.encodePacked(receiver, universityId));
-
-    //     return ECDSA.toEthSignedMessageHash(digest);
-    // }
 
     /**
      * @dev Sets `_tokenURI` as the tokenURI of `tokenId`.
