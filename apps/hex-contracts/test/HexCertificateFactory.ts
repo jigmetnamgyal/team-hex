@@ -4,8 +4,8 @@ import { HexCertificateFactory } from '../typechain';
 
 describe('HexCertificateFactory', () => {
   let contract: HexCertificateFactory;
-  let deployer: SignerWithAddress;
-  let caller: SignerWithAddress;
+  let admin: SignerWithAddress;
+  let notAdmin: SignerWithAddress;
 
   before(async () => {
     const HexCertificateFactory = await ethers.getContractFactory(
@@ -16,12 +16,20 @@ describe('HexCertificateFactory', () => {
     );
     contract = await proxyContract.deployed();
 
-    [deployer, caller] = await ethers.getSigners();
+    [admin, notAdmin] = await ethers.getSigners();
   });
 
   describe('setBaseURI', () => {
     it('should only allow admin to mutate baseURI', async () => {
+      contract = contract.connect(admin);
+
       await contract.setBaseURI('ipfs://cid_123/');
+    });
+
+    it('should revert when caller is not admin', async () => {
+      contract = contract.connect(notAdmin);
+
+      expect(contract.setBaseURI('ipfs://cid_123/'))
     });
   });
 });
