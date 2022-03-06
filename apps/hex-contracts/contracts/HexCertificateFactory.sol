@@ -1,17 +1,24 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.10;
 
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-// import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
+
+// import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 /// @title Hex Certificate Factory
 /// @author Carlo Miguel Dy
 /// @dev A university registrant and issuer of certificates via {AccessControl}
-contract HexCertificateFactory is ERC721Enumerable, AccessControl {
+contract HexCertificateFactory is
+    Initializable,
+    ERC721EnumerableUpgradeable,
+    AccessControlUpgradeable
+{
     using Counters for Counters.Counter;
     using Strings for uint256;
 
@@ -19,7 +26,7 @@ contract HexCertificateFactory is ERC721Enumerable, AccessControl {
 
     address public treasuryAddress;
 
-    string public baseURI = "";
+    string public baseURI;
 
     Counters.Counter private _tokenCounter;
 
@@ -121,8 +128,11 @@ contract HexCertificateFactory is ERC721Enumerable, AccessControl {
         _;
     }
 
-    constructor() ERC721("Hex Certificate Factory", "HCF") {
+    function initialize() public initializer {
+        __ERC721_init("Hex Certificate Factory", "HCF");
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
+
+        baseURI = "";
     }
 
     /**
@@ -455,14 +465,17 @@ contract HexCertificateFactory is ERC721Enumerable, AccessControl {
         public
         view
         virtual
-        override(ERC721Enumerable, AccessControl)
+        override(ERC721EnumerableUpgradeable, AccessControlUpgradeable)
         returns (bool)
     {
         bool erc721Enumerable = interfaceId ==
-            type(IERC721Enumerable).interfaceId ||
+            type(IERC721EnumerableUpgradeable).interfaceId ||
             super.supportsInterface(interfaceId);
-        bool accessControl = interfaceId == type(IAccessControl).interfaceId ||
+
+        bool accessControl = interfaceId ==
+            type(IAccessControlUpgradeable).interfaceId ||
             super.supportsInterface(interfaceId);
+
         return erc721Enumerable || accessControl;
     }
 
@@ -500,7 +513,7 @@ contract HexCertificateFactory is ERC721Enumerable, AccessControl {
     }
 
     /**
-     * @inheritdoc ERC721
+     * @inheritdoc ERC721Upgradeable
      */
     function _baseURI() internal view virtual override returns (string memory) {
         return baseURI;
