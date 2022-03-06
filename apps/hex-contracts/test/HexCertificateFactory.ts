@@ -13,8 +13,8 @@ describe('HexCertificateFactory', () => {
   let notAdmin: SignerWithAddress;
   let registrant1: SignerWithAddress;
   let registrant2: SignerWithAddress;
-  let registrant3: SignerWithAddress;
-  let registrant4: SignerWithAddress;
+  let certificateReceiver1: SignerWithAddress;
+  let certificateReceiver2: SignerWithAddress;
 
   before(async () => {
     const HexCertificateFactory = await ethers.getContractFactory(
@@ -25,8 +25,14 @@ describe('HexCertificateFactory', () => {
     );
     contract = await proxyContract.deployed();
 
-    [admin, notAdmin, registrant1, registrant2, registrant3, registrant4] =
-      await ethers.getSigners();
+    [
+      admin,
+      notAdmin,
+      registrant1,
+      registrant2,
+      certificateReceiver1,
+      certificateReceiver2,
+    ] = await ethers.getSigners();
   });
 
   // simple test cases
@@ -105,6 +111,45 @@ describe('HexCertificateFactory', () => {
       ).to.be.revertedWith(
         `AccessControl: account ${notAdmin.address.toLowerCase()} is missing role ${DEFAULT_ADMIN_ROLE}`
       );
+    });
+  });
+
+  describe('issueCertificate', () => {
+    it('should issue certificates to target addresses when caller is a registered', async () => {
+      contract = contract.connect(registrant1);
+      const tokenId = BigNumber.from(1); // suppose that the first mint is always tokenId 1
+
+      const universityId = await contract.getUniversityId(registrant1.address);
+      await expect(
+        contract.issueCertificate(universityId, certificateReceiver1.address)
+      ).to.be.not.and.to.be.not.revertedWith(
+        'Not authorized to issue certificates.'
+      );
+
+      const totalSupply = await contract.totalSupply();
+      expect(totalSupply.toNumber()).to.be.eq(1);
+
+      const [baseURI, universityBaseURI] = await Promise.all([
+        contract.baseURI(),
+        contract.getUniversity(universityId),
+      ]);
+      const [
+        certificateReceiverBalance,
+        certificateReceiverTokenURI,
+        tokenOwner,
+      ] = await Promise.all([
+        contract.balanceOf(certificateReceiver1.address),
+        contract.tokenURI(tokenId),
+        contract.ownerOf(tokenId),
+      ]);
+
+      console.log({certificateReceiverTokenURI})
+      
+      expect(certificateReceiverBalance.toNumber()).to.be.eq(1);
+      expect(certificateReceiverTokenURI).to.be.equal(
+        `${baseURI}${universityBaseURI}${tokenId.toNumber()}`
+      );
+      expect(tokenOwner).to.be.eq(certificateReceiver1.address);
     });
   });
 });
