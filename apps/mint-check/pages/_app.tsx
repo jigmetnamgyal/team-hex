@@ -2,6 +2,8 @@ import { AppProps } from 'next/app';
 import Head from 'next/head';
 import './styles.css';
 import { ChakraProvider } from '@chakra-ui/react';
+import { NAVIGATION } from '../constants/mint-check.constants';
+import { Layout } from '@team-hex/ui-kit';
 
 function CustomApp({ Component, pageProps }: AppProps) {
   return (
@@ -11,7 +13,9 @@ function CustomApp({ Component, pageProps }: AppProps) {
       </Head>
       <ChakraProvider>
         <main className='app'>
-          <Component {...pageProps} />
+          <Layout navigationItems={NAVIGATION}>
+            <Component {...pageProps} />
+          </Layout>
         </main>
       </ChakraProvider>
     </>
