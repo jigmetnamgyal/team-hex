@@ -114,6 +114,22 @@ contract HexCertificateFactory is
     );
 
     /**
+     * @dev Emits when a university's permissions has been revoked.
+     */
+    event UniversityPermissionRevoked(
+        bytes32 indexed universityId,
+        address indexed registrant
+    );
+
+    /**
+     * @dev Emits when a university's permissions has been restored.
+     */
+    event UniversityPermissionRestored(
+        bytes32 indexed universityId,
+        address indexed registrant
+    );
+
+    /**
      * @dev Emits when an existing token updates their tokenURI.
      */
     event TokenURIUpdated(
@@ -123,19 +139,21 @@ contract HexCertificateFactory is
     );
 
     /**
-     * @dev Validates if the given params for university transactions are valid
-     * @param universityId The unique identifier for a university
-     * @param registrant The address that is authorized to university minting
+     * @dev Validates if the universityId is in valid format.
      */
-    modifier validUniversityParams(bytes32 universityId, address registrant) {
+    modifier validUniversityId(bytes32 universityId) {
         require(
             universityId != bytes32(0),
             "The given universityId should not be empty."
         );
-        require(
-            registrant != address(0),
-            "The registrant should not be an empty address."
-        );
+        _;
+    }
+
+    /**
+     * @dev Validates if the given address is not an empty address.
+     */
+    modifier validAddress(address _address) {
+        require(_address != address(0), "The given address must not be empty.");
         _;
     }
 
@@ -153,14 +171,6 @@ contract HexCertificateFactory is
             _idToUniversity[universityId].exists == true,
             "The university isn't registered."
         );
-        _;
-    }
-
-    /**
-     * @dev Validates if the given address is not an empty address.
-     */
-    modifier validAddress(address _address) {
-        require(_address != address(0), "The given address must not be empty.");
         _;
     }
 
@@ -278,7 +288,8 @@ contract HexCertificateFactory is
     )
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
-        validUniversityParams(universityId, registrant)
+        validUniversityId(universityId)
+        validAddress(registrant)
     {
         require(
             _idToUniversity[universityId].exists == false,
@@ -319,7 +330,8 @@ contract HexCertificateFactory is
     )
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
-        validUniversityParams(universityId, newRegistrant)
+        validUniversityId(universityId)
+        validAddress(newRegistrant)
     {
         require(
             _registrantToUniversityId[newRegistrant] == bytes32(0),
@@ -358,39 +370,35 @@ contract HexCertificateFactory is
     /**
      * @dev Removes the permissions of a university for issuing certificates to students
      * @param universityId The identifier that represents a university
-     * @param registrant The address that registers a university
      */
-    function revokeUniversityAuthorization(
-        bytes32 universityId,
-        address registrant
-    )
+    function revokeUniversityAuthorization(bytes32 universityId)
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
-        validUniversityParams(universityId, registrant)
-        revokeRestoreValidation(universityId, registrant)
+        validUniversityId(universityId)
     {
-        _revokeRole(universityId, registrant);
+        _revokeRole(universityId, _idToUniversity[universityId].registrant);
 
-        emit UniversityDeregistered(universityId, registrant, msg.sender);
+        emit UniversityPermissionRevoked(
+            universityId,
+            _idToUniversity[universityId].registrant
+        );
     }
 
     /**
      * @dev Restores the permissions of a university for issuing certificates to students
      * @param universityId The identifier that represents a university
-     * @param registrant The address that registers a university
      */
-    function restoreUniversityAuthorization(
-        bytes32 universityId,
-        address registrant
-    )
+    function restoreUniversityAuthorization(bytes32 universityId)
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
-        validUniversityParams(universityId, registrant)
-        revokeRestoreValidation(universityId, registrant)
+        validUniversityId(universityId)
     {
-        _grantRole(universityId, registrant);
+        _grantRole(universityId, _idToUniversity[universityId].registrant);
 
-        emit UniversityDeregistered(universityId, registrant, msg.sender);
+        emit UniversityPermissionRestored(
+            universityId,
+            _idToUniversity[universityId].registrant
+        );
     }
 
     /**
@@ -493,20 +501,22 @@ contract HexCertificateFactory is
 
     /**
      * @dev When a university is KYC verified, then it can authorized minting certificates.
-     * @param universityId The registered university
      * @param recipient The address that will receive the minted NFT
      */
-    function issueCertificate(bytes32 universityId, address recipient)
+    function issueCertificate(address recipient)
         external
-        onlyRole(universityId)
+        validAddress(recipient)
     {
         require(
-            hasRole(universityId, msg.sender),
+            hasRole(_registrantToUniversityId[msg.sender], msg.sender),
             "Not authorized to issue certificates."
         );
 
         _tokenCounter.increment();
+
         uint256 tokenId = _tokenCounter.current();
+        bytes32 universityId = _registrantToUniversityId[msg.sender];
+
         _safeMint(recipient, tokenId);
         _setTokenURI(tokenId, _idToUniversity[universityId].directory);
 
