@@ -50,10 +50,10 @@ contract HexCertificateFactory is
         bool exists;
     }
 
-    event ServerAddressUpdated(
-        address indexed oldServerAddress,
-        address indexed newServerAddress
-    );
+    // event ServerAddressUpdated(
+    //     address indexed oldServerAddress,
+    //     address indexed newServerAddress
+    // );
 
     event TreasuryAddressUpdated(
         address indexed oldTreasuryAddress,
@@ -347,19 +347,19 @@ contract HexCertificateFactory is
         baseURI = newBaseURI;
     }
 
-    /**
-     * @param _serverAddress A new server address value
-     * @dev Sets a new value to `serverAddress` state property
-     */
-    function setServerAddress(address _serverAddress)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-        validAddress(_serverAddress)
-    {
-        emit ServerAddressUpdated(serverAddress, _serverAddress);
+    // /**
+    //  * @param _serverAddress A new server address value
+    //  * @dev Sets a new value to `serverAddress` state property
+    //  */
+    // function setServerAddress(address _serverAddress)
+    //     external
+    //     onlyRole(DEFAULT_ADMIN_ROLE)
+    //     validAddress(_serverAddress)
+    // {
+    //     emit ServerAddressUpdated(serverAddress, _serverAddress);
 
-        serverAddress = _serverAddress;
-    }
+    //     serverAddress = _serverAddress;
+    // }
 
     /**
      * @param _treasuryAddress A new server address value
