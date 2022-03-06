@@ -4,6 +4,10 @@ import { HexCertificateFactory } from '../typechain';
 import { expect } from 'chai';
 import { BigNumber } from 'ethers';
 
+function accessControlExceptionMessage(account: string, role: string) {
+  return `AccessControl: account ${account.toLowerCase()} is missing role ${role}`;
+}
+
 describe('HexCertificateFactory', () => {
   const DEFAULT_ADMIN_ROLE =
     '0x0000000000000000000000000000000000000000000000000000000000000000';
@@ -119,7 +123,7 @@ describe('HexCertificateFactory', () => {
           payload.directory
         )
       ).to.be.revertedWith(
-        `AccessControl: account ${notAdmin.address.toLowerCase()} is missing role ${DEFAULT_ADMIN_ROLE}`
+        accessControlExceptionMessage(notAdmin.address, DEFAULT_ADMIN_ROLE)
       );
     });
   });
@@ -221,6 +225,57 @@ describe('HexCertificateFactory', () => {
       expect(totalSupply.toNumber()).to.be.eq(2);
       expect(certificateReceiver2Balance.toNumber()).to.be.eq(1);
       expect(certificateReceiverTokenId.toNumber()).to.be.eq(2);
+    });
+  });
+
+  describe('changeUniversityRegistrant', () => {
+    it('should revert when caller is not admin', async () => {
+      contract = contract.connect(notAdmin);
+
+      const universityId = await contract.getUniversityId(registrant1.address);
+
+      await expect(
+        contract.changeUniversityRegistrant(universityId, notAdmin.address)
+      ).to.be.revertedWith(
+        accessControlExceptionMessage(notAdmin.address, DEFAULT_ADMIN_ROLE)
+      );
+    });
+
+    it('should change registrant', async () => {
+      contract = contract.connect(admin);
+
+      const previousUniversityId = await contract.getUniversityId(
+        registrant1.address
+      );
+
+      await expect(
+        contract.changeUniversityRegistrant(
+          previousUniversityId,
+          registrant2.address
+        )
+      )
+        .to.emit(contract, 'UniversityRegistrantChanged')
+        .withArgs(
+          previousUniversityId,
+          registrant1.address,
+          registrant2.address
+        );
+      const [
+        universityOfRegistrant2,
+        universityIdOfRegistrant1,
+        universityIdOfRegistrant2,
+      ] = await Promise.all([
+        contract.getUniversity(previousUniversityId),
+        contract.getUniversityId(registrant1.address),
+        contract.getUniversityId(registrant2.address),
+      ]);
+
+      expect(universityOfRegistrant2.registrant).to.be.eq(registrant2.address);
+      expect(universityOfRegistrant2.registrant).to.be.not.eq(
+        registrant1.address
+      );
+      expect(universityIdOfRegistrant1).to.be.eq(ethers.constants.HashZero);
+      expect(universityIdOfRegistrant2).to.be.eq(previousUniversityId);
     });
   });
 });
