@@ -8,7 +8,7 @@ import { ethers } from 'ethers'
    * address: User wallet address
    * Signature: Signed message by user (Byte32)
    * 
-   * @param signatureDto The payload containing Address, Hash and Signature
+   * @param Req The payload containing Address, Hash and Signature
    * @returns true if address is successfully recovered from signature @else false
    * 
 */ 
