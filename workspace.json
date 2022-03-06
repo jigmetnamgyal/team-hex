@@ -1,10 +1,8 @@
 {
   "version": 2,
   "projects": {
-    "core": "libs/core",
-    "hex-contracts": "apps/hex-contracts",
     "mint-check": "apps/mint-check",
     "mint-check-e2e": "apps/mint-check-e2e",
-    "serverless-api": "apps/serverless-api"
+    "ui-kit": "libs/ui-kit"
   }
 }

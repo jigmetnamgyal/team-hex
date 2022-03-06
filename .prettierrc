@@ -1,5 +1,13 @@
 {
-  "singleQuote": true,
-  "trailingComma": "all",
-  "endOfLine": "auto"
+	"singleQuote": true,
+	"trailingComma": "all",
+	"endOfLine": "auto",
+	"overrides": [
+		{
+			"files": "*.sol",
+			"options": {
+				"singleQuote": false
+			}
+		}
+	]
 }
