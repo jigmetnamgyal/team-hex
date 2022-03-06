@@ -6,7 +6,8 @@
     "node": "hardhat node",
     "coverage": "hardhat coverage",
     "deploy": "hardhat run scripts/deploy.ts",
-    "deploy:mumbai": "hardhat run --network mumbai scripts/deploy.ts"
+    "deploy:mumbai": "hardhat run --network mumbai scripts/deploy.ts",
+    "verify:mumbai": "hardhat verify --network mumbai"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.5",
