@@ -1,25 +1,33 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "files": [
-    "./hardhat.config.ts"
-  ],
-  "include": [
-    "./src",
-  ],
   "compilerOptions": {
     "target": "es2018",
     "module": "commonjs",
     "strict": true,
     "esModuleInterop": true,
     "outDir": "dist",
-    "declaration": true
+    "declaration": true,
+    "resolveJsonModule": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "rootDirs": [
+      "./src",
+      "./scripts",
+      "./test"
+    ]
   },
-  "references": [
-    {
-      "path": "./tsconfig.app.json"
-    },
-    {
-      "path": "./tsconfig.spec.json"
-    }
+  "exclude": [
+    "dist",
+    "node_modules"
+  ],
+  "include": [
+    "./scripts",
+    "./test",
+    "./typechain",
+    "./helpers",
+    "./utils",
+    "./src"
+  ],
+  "files": [
+    "./hardhat.config.ts"
   ]
 }
