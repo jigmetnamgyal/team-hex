@@ -7,6 +7,8 @@ import { ethers } from 'ethers'
    * 
    * @param walletAddress The wallet address of the user
    * 
+   * { walletAddress: '0x.....' }
+   * 
    * @returns Byte32 Hash after packing the wallet and nonce with solidityKeccak256
    * 
 */
