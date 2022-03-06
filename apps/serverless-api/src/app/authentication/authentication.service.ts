@@ -1,15 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ethers } from 'ethers'
 import { SIGNING_MESSAGE } from './constants/constant';
-import { WalletDto } from './dto/wallet.dto';
+import { WalletDto, SignatureDto } from './dto/index'
 import { Nonce } from './types';
-import SignatureDto from './dto/signature.dto';
 
 @Injectable()
 export class AuthenticationService {
-  public hello(){
-    return "Hello From authentication"
-  }
 
   /**
    * Generate byte32 hash from user wallet and nonce

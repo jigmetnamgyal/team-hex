@@ -1,19 +1,13 @@
-import { Controller, Get, Body, Post } from '@nestjs/common';
 import { Nonce } from './types/index'
+import { WalletDto, SignatureDto } from './dto/index'
 import { AuthenticationService } from './authentication.service';
-import { WalletDto } from './dto/wallet.dto';
-import SignatureDto from './dto/signature.dto';
+import { Controller, Get, Body, Post } from '@nestjs/common';
 
 @Controller('')
 export class AuthenticationController {
   constructor(
     private readonly authService: AuthenticationService,
   ) {}
-
-  @Get('hello')
-  hello() {
-    return this.authService.hello()
-  }
 
   @Get('nonce')
   generateNonce(@Body() walletData: WalletDto): Promise<Nonce> {
