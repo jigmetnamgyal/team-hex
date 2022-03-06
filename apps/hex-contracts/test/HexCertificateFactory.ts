@@ -82,7 +82,6 @@ describe('HexCertificateFactory', () => {
 
       const universityId = await contract.getUniversityId(registrant1.address);
       expect(universityId).to.be.equal(payload.universityId);
-      console.log({ universityId });
 
       const universityCount = await contract.getUniversityCount();
       expect(universityCount.toNumber()).to.be.equal(1);
@@ -130,9 +129,8 @@ describe('HexCertificateFactory', () => {
       contract = contract.connect(registrant1);
       const tokenId = BigNumber.from(1); // suppose that the first mint is always tokenId 1
 
-      const universityId = await contract.getUniversityId(registrant1.address);
       await expect(
-        contract.issueCertificate(universityId, certificateReceiver1.address)
+        contract.issueCertificate(certificateReceiver1.address)
       ).to.be.not.and.to.be.not.revertedWith(
         'Not authorized to issue certificates.'
       );
@@ -140,6 +138,7 @@ describe('HexCertificateFactory', () => {
       const totalSupply = await contract.totalSupply();
       expect(totalSupply.toNumber()).to.be.eq(1);
 
+      const universityId = await contract.getUniversityId(registrant1.address);
       const [university] = await Promise.all([
         contract.getUniversity(universityId),
       ]);
@@ -154,13 +153,74 @@ describe('HexCertificateFactory', () => {
         contract.ownerOf(tokenId),
       ]);
 
-      console.log({ certificateReceiverTokenURI });
-
       expect(certificateReceiverBalance.toNumber()).to.be.eq(1);
       expect(certificateReceiverTokenURI).to.be.equal(
         [baseURI, universityDirectory, tokenId.toNumber(), '.json'].join('')
       );
       expect(tokenOwner).to.be.eq(certificateReceiver1.address);
+    });
+
+    it('should revert when caller is not registered', async () => {
+      contract = contract.connect(registrant2);
+
+      await expect(
+        contract.issueCertificate(certificateReceiver1.address)
+      ).to.be.revertedWith('Not authorized to issue certificates.');
+    });
+  });
+
+  describe('revokeUniversityAuthorization', () => {
+    it('should not allow a revoked university to issue certificates', async () => {
+      contract = contract.connect(admin); // connect as admin/deployer
+
+      const universityId = await contract.getUniversityId(registrant1.address);
+      const university = await contract.getUniversity(universityId);
+
+      await expect(contract.revokeUniversityAuthorization(universityId))
+        .to.emit(contract, 'UniversityPermissionRevoked')
+        .withArgs(universityId, university.registrant);
+
+      contract = contract.connect(registrant1); // connect as revoked university registrant
+
+      await expect(
+        contract.issueCertificate(certificateReceiver1.address)
+      ).to.be.revertedWith('Not authorized to issue certificates.');
+    });
+  });
+
+  describe('restoreUniversityAuthorization', () => {
+    it('should allow to issue certificates after a university gets their permissions restored', async () => {
+      contract = contract.connect(admin); // connect as admin/deployer
+
+      const universityId = await contract.getUniversityId(registrant1.address);
+      const university = await contract.getUniversity(universityId);
+
+      await expect(contract.restoreUniversityAuthorization(universityId))
+        .to.emit(contract, 'UniversityPermissionRestored')
+        .withArgs(universityId, university.registrant);
+
+      contract = contract.connect(registrant1); // connect as restored university registrant
+      await expect(
+        contract.issueCertificate(certificateReceiver2.address)
+      ).to.be.not.and.to.be.not.revertedWith(
+        'Not authorized to issue certificates.'
+      );
+      const [
+        totalSupply,
+        certificateReceiver2Balance,
+        certificateReceiverTokenId,
+      ] = await Promise.all([
+        contract.totalSupply(),
+        contract.balanceOf(certificateReceiver2.address),
+        contract.tokenOfOwnerByIndex(
+          certificateReceiver2.address,
+          BigNumber.from(0)
+        ),
+      ]);
+
+      expect(totalSupply.toNumber()).to.be.eq(2);
+      expect(certificateReceiver2Balance.toNumber()).to.be.eq(1);
+      expect(certificateReceiverTokenId.toNumber()).to.be.eq(2);
     });
   });
 });
