@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(version: 2022_03_03_175933) do
     t.string "wallet_address", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "jti", null: false
+    t.string "signature", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["jti"], name: "index_users_on_jti", unique: true

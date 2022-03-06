@@ -1,6 +1,8 @@
 require_relative '../../lib/devise/jwt/revocation_strategies/custom_jti_matcher'
 
 class User < ApplicationRecord
+  attr_accessor :user
+
   devise(
     :database_authenticatable,
     :registerable,
@@ -28,9 +30,5 @@ class User < ApplicationRecord
 
   def password_required?
     false
-  end
-
-  def jwt_payload
-    super.merge!({ wallet_address: wallet_address })
   end
 end
