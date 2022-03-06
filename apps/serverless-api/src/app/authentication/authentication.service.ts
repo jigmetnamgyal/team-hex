@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ethers } from 'ethers'
 import { SIGNING_MESSAGE } from './constants/constant';
 import { WalletDto } from './dto/wallet.dto';
-import { Nonce, SignaturePayload } from './types';
+import { Nonce } from './types';
 import SignatureDto from './dto/signature.dto';
 
 @Injectable()
@@ -30,14 +30,23 @@ export class AuthenticationService {
     };
   }
 
-  async verifySignature(signatureDto: SignatureDto): Promise<boolean> {
-      // Logger.verbose(`"[verifySignature]: address "${address}", signature "${payload.signature}"`)
+  /**
+   * Hash: Byte32 message created using solidityKeccak256
+   * address: User wallet address
+   * Signature: Signed message by user (Byte32)
+   * 
+   * @param signatureDto The payload containing Address, Hash and Signature
+   * @returns true if address is successfully recovered from signature @else false
+   * 
+   */ 
 
-      console.log(signatureDto)
+  async verifySignature(signatureDto: SignatureDto): Promise<boolean> {
+      Logger.verbose(`"[verifySignature]: address "${signatureDto.walletAddress}", signature "${signatureDto.signature}"`)
+
       const recoveredAddress = ethers.utils.verifyMessage(signatureDto.nonce.message, signatureDto.signature)
 
-      // Logger.verbose(`[verifySignature]: recoveredAddress "${recoveredAddress}"`)
+      Logger.verbose(`[verifySignature]: recoveredAddress "${recoveredAddress}"`)
 
-      return recoveredAddress.toLowerCase() === signatureDto.walletAddress.toLowerCase()
+      return recoveredAddress === signatureDto.walletAddress
   }
 }
