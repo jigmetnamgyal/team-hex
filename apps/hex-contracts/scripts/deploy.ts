@@ -2,6 +2,13 @@ import { ethers, upgrades } from 'hardhat';
 import { HexCertificateFactory } from '../typechain';
 
 async function main() {
+  const [deployer] = await ethers.getSigners();
+  const balance = await deployer.getBalance();
+  console.log('✨', {
+    deployer_address: deployer.address,
+    deployer_balance: ethers.utils.formatEther(balance),
+  });
+
   const HexCertificateFactory = await ethers.getContractFactory(
     'HexCertificateFactory'
   );
