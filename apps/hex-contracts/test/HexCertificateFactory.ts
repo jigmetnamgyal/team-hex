@@ -61,6 +61,30 @@ describe('HexCertificateFactory', () => {
   });
 
   describe('authorizeUniversity', () => {
+    it('should revert when caller is not admin', async () => {
+      contract = contract.connect(notAdmin);
+      const hashedUniversityId = ethers.utils.solidityKeccak256(
+        ['string'], // since it is a string, then we hash it into bytes32 as a result
+        ['NEW_UNIVERSITY_ID'] // this can be anything, maybe generated from PostgreSQL UUID
+      );
+      const payload = {
+        universityId: hashedUniversityId,
+        directory: `${hashedUniversityId}/`,
+      };
+
+      // when a university passes KYC verifiction then
+      // adds a registered university on-chain
+      await expect(
+        contract.authorizeUniversity(
+          payload.universityId,
+          registrant1.address,
+          payload.directory
+        )
+      ).to.be.revertedWith(
+        accessControlExceptionMessage(notAdmin.address, DEFAULT_ADMIN_ROLE)
+      );
+    });
+
     it('should add a university when caller is admin', async () => {
       contract = contract.connect(admin);
       const hashedUniversityId = ethers.utils.solidityKeccak256(
@@ -103,28 +127,24 @@ describe('HexCertificateFactory', () => {
       expect(university.directory).to.be.equal(payload.directory);
     });
 
-    it('should revert when caller is not admin', async () => {
-      contract = contract.connect(notAdmin);
+    it('should revert the universityId is already used', async () => {
+      contract = contract.connect(admin);
       const hashedUniversityId = ethers.utils.solidityKeccak256(
-        ['string'], // since it is a string, then we hash it into bytes32 as a result
-        ['NEW_UNIVERSITY_ID'] // this can be anything, maybe generated from PostgreSQL UUID
+        ['string'],
+        ['NEW_UNIVERSITY_ID'] // existing universityId on-chain
       );
       const payload = {
         universityId: hashedUniversityId,
         directory: `${hashedUniversityId}/`,
       };
 
-      // when a university passes KYC verifiction then
-      // adds a registered university on-chain
       await expect(
         contract.authorizeUniversity(
           payload.universityId,
           registrant1.address,
           payload.directory
         )
-      ).to.be.revertedWith(
-        accessControlExceptionMessage(notAdmin.address, DEFAULT_ADMIN_ROLE)
-      );
+      ).to.be.revertedWith('The given universityId was already registered.');
     });
   });
 
@@ -276,6 +296,25 @@ describe('HexCertificateFactory', () => {
       );
       expect(universityIdOfRegistrant1).to.be.eq(ethers.constants.HashZero);
       expect(universityIdOfRegistrant2).to.be.eq(previousUniversityId);
+    });
+  });
+
+  describe('withdraw', () => {
+    it('should revert when treasuryAddress is not set', async () => {
+      contract = contract.connect(admin);
+
+      await expect(contract.withdraw()).to.be.revertedWith(
+        'The treasuryAddress is empty, it must be set first.'
+      );
+    });
+
+    it('should withdraw funds when treasuryAddress is set', async () => {
+      contract = contract.connect(admin);
+
+      await expect(contract.setTreasuryAddress(registrant2.address))
+        .to.emit(contract, 'TreasuryAddressUpdated')
+        .withArgs(ethers.constants.AddressZero, registrant2.address);
+      await expect(contract.withdraw()).to.be.not.reverted;
     });
   });
 });
