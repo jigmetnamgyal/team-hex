@@ -37,6 +37,7 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+.env
 
 # Ignore bundler config.
 /backend/.bundle
@@ -59,3 +60,4 @@ Thumbs.db
 # Ignore master key for decrypting credentials and more.
 /backend/config/credentials.yml.enc
 /backend/config/master.key
+/backend/.env
