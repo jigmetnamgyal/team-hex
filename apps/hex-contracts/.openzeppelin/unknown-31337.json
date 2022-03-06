@@ -2,19 +2,19 @@
   "manifestVersion": "3.2",
   "admin": {
     "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
-    "txHash": "0xdedeba460ca2442c98696d6d45197e9c1e91143e2967584953eb2a0d121fcb77"
+    "txHash": "0xd32a2d9d99d788edf8324861d7ecb75dc1a6807c5d32c647cc16bc98611d916c"
   },
   "proxies": [
     {
       "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
-      "txHash": "0x764b30793f0b2f96c66691e97d9818a36a0229f076aae8bb455e8b2fc95b3902",
+      "txHash": "0x1d33aca660aa94d220f8ba19c70efd88c1f00d471065ee863fd1e62327b589e4",
       "kind": "transparent"
     }
   ],
   "impls": {
-    "aa540c6c147ac1a54936aadaade915ad49e33543a3d90ed1edeee02eedf949a2": {
+    "affc6449065247e9ed1fe47b0fcb118b9b80d298c4aff1bd55260392fb8abdd6": {
       "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-      "txHash": "0xf5bfe4318e7ef837e6868599b0bb4cb1b2fa294b6224fa8885309bf2d1f52b53",
+      "txHash": "0xf78660a4fce2aeb8aa7c5ce6a4117e4ba8ef1182f6587eeeb646a55dfb4bdf8a",
       "layout": {
         "storage": [
           {
@@ -324,7 +324,7 @@
                 "type": "t_uint256"
               },
               {
-                "label": "universityBaseURI",
+                "label": "directory",
                 "type": "t_string_storage"
               },
               {

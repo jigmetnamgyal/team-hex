@@ -15,13 +15,17 @@ describe('HexCertificateFactory', () => {
   let registrant2: SignerWithAddress;
   let certificateReceiver1: SignerWithAddress;
   let certificateReceiver2: SignerWithAddress;
+  let baseURI: string;
 
   before(async () => {
     const HexCertificateFactory = await ethers.getContractFactory(
       'HexCertificateFactory'
     );
-    const proxyContract = <HexCertificateFactory>(
-      await upgrades.deployProxy(HexCertificateFactory)
+    const proxyContract = <HexCertificateFactory>await upgrades.deployProxy(
+      HexCertificateFactory,
+      [
+        'https://web3con-team-hex.s3.filebase.com/', // baseURI or storageBaseURI constructor argument
+      ]
     );
     contract = await proxyContract.deployed();
 
@@ -33,6 +37,8 @@ describe('HexCertificateFactory', () => {
       certificateReceiver1,
       certificateReceiver2,
     ] = await ethers.getSigners();
+
+    baseURI = await contract.baseURI();
   });
 
   // simple test cases
@@ -53,12 +59,13 @@ describe('HexCertificateFactory', () => {
   describe('authorizeUniversity', () => {
     it('should add a university when caller is admin', async () => {
       contract = contract.connect(admin);
+      const hashedUniversityId = ethers.utils.solidityKeccak256(
+        ['string'], // since it is a string, then we hash it into bytes32 as a result
+        ['NEW_UNIVERSITY_ID'] // this can be anything, maybe generated from PostgreSQL UUID
+      );
       const payload = {
-        universityId: ethers.utils.solidityKeccak256(
-          ['string'], // since it is a string, then we hash it into bytes32 as a result
-          ['NEW_UNIVERSITY_ID'] // this can be anything, maybe generated from PostgreSQL UUID
-        ),
-        universityBaseURI: 'ipfs://cid_university_123/',
+        universityId: hashedUniversityId,
+        directory: hashedUniversityId,
       };
 
       // when a university passes KYC verifiction then
@@ -67,7 +74,7 @@ describe('HexCertificateFactory', () => {
         contract.authorizeUniversity(
           payload.universityId,
           registrant1.address,
-          payload.universityBaseURI
+          payload.directory
         )
       )
         .to.emit(contract, 'UniversityRegistered')
@@ -75,6 +82,7 @@ describe('HexCertificateFactory', () => {
 
       const universityId = await contract.getUniversityId(registrant1.address);
       expect(universityId).to.be.equal(payload.universityId);
+      console.log({ universityId });
 
       const universityCount = await contract.getUniversityCount();
       expect(universityCount.toNumber()).to.be.equal(1);
@@ -89,9 +97,7 @@ describe('HexCertificateFactory', () => {
       expect(university.exists).to.be.equal(true);
       expect(university.registrant).to.be.equal(registrant1.address);
       expect(university.index.toNumber()).to.be.equal(0); // assert if it still equal to 0
-      expect(university.universityBaseURI).to.be.equal(
-        payload.universityBaseURI
-      );
+      expect(university.directory).to.be.equal(payload.directory);
     });
 
     it('should revert when caller is not admin', async () => {
@@ -129,10 +135,11 @@ describe('HexCertificateFactory', () => {
       const totalSupply = await contract.totalSupply();
       expect(totalSupply.toNumber()).to.be.eq(1);
 
-      const [baseURI, universityBaseURI] = await Promise.all([
+      const [baseURI, university] = await Promise.all([
         contract.baseURI(),
         contract.getUniversity(universityId),
       ]);
+      const universityDirectory = university.directory;
       const [
         certificateReceiverBalance,
         certificateReceiverTokenURI,
@@ -143,11 +150,11 @@ describe('HexCertificateFactory', () => {
         contract.ownerOf(tokenId),
       ]);
 
-      console.log({certificateReceiverTokenURI})
-      
+      console.log({ certificateReceiverTokenURI });
+
       expect(certificateReceiverBalance.toNumber()).to.be.eq(1);
       expect(certificateReceiverTokenURI).to.be.equal(
-        `${baseURI}${universityBaseURI}${tokenId.toNumber()}`
+        `${baseURI}${university}${tokenId.toNumber()}`
       );
       expect(tokenOwner).to.be.eq(certificateReceiver1.address);
     });

@@ -46,7 +46,7 @@ contract HexCertificateFactory is
         address registrant;
         uint256 index;
         uint256 registeredAt;
-        string universityBaseURI;
+        string directory;
         bool exists;
     }
 
@@ -86,10 +86,10 @@ contract HexCertificateFactory is
         address indexed newRegistrant
     );
 
-    event UniversityBaseURIUpdated(
+    event UniversityDirectoryUpdated(
         bytes32 indexed universityId,
-        string oldBaseURI,
-        string newBaseURI
+        string oldDirectoryName,
+        string newDirectoryName
     );
 
     /**
@@ -128,11 +128,11 @@ contract HexCertificateFactory is
         _;
     }
 
-    function initialize() public initializer {
+    function initialize(string memory _storageBaseURI) public initializer {
         __ERC721_init("Hex Certificate Factory", "HCF");
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
 
-        baseURI = "";
+        baseURI = _storageBaseURI;
     }
 
     /**
@@ -222,12 +222,12 @@ contract HexCertificateFactory is
      * @dev Gives a university permissions to issue certificates to their students
      * @param universityId The identifier that represents a university
      * @param registrant The address that registers a university
-     * @param universityBaseURI The baseURI for the certificate the university is issuing
+     * @param directory The directory name for the university metadata certificates are stored
      */
     function authorizeUniversity(
         bytes32 universityId,
         address registrant,
-        string memory universityBaseURI
+        string memory directory
     )
         external
         onlyRole(DEFAULT_ADMIN_ROLE)
@@ -254,7 +254,7 @@ contract HexCertificateFactory is
             registrant: registrant,
             index: registeredUniversityIndex,
             registeredAt: block.timestamp,
-            universityBaseURI: universityBaseURI,
+            directory: directory,
             exists: true
         });
 
@@ -376,21 +376,21 @@ contract HexCertificateFactory is
     }
 
     /**
-     * @dev Updates the baseURI for a specific registered university
+     * @dev Updates the directory name for a specific registered university
      * @param universityId The identifier that represents a registered university
-     * @param newBaseURI The new baseURI for a university
+     * @param directory The new baseURI for a university
      */
-    function setUniversityBaseURI(
+    function setUniversityDirectory(
         bytes32 universityId,
-        string memory newBaseURI
+        string memory directory
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        emit UniversityBaseURIUpdated(
+        emit UniversityDirectoryUpdated(
             universityId,
-            _idToUniversity[universityId].universityBaseURI,
-            newBaseURI
+            _idToUniversity[universityId].directory,
+            directory
         );
 
-        _idToUniversity[universityId].universityBaseURI = newBaseURI;
+        _idToUniversity[universityId].directory = directory;
     }
 
     /**
@@ -453,7 +453,7 @@ contract HexCertificateFactory is
         _tokenCounter.increment();
         uint256 tokenId = _tokenCounter.current();
         _safeMint(receiver, tokenId);
-        _setTokenURI(tokenId, _idToUniversity[universityId].universityBaseURI);
+        _setTokenURI(tokenId, _idToUniversity[universityId].directory);
 
         emit CertificateIssued(receiver, universityId, tokenId);
     }
