@@ -22,6 +22,7 @@ bundle install
 ```bash
 bundle exec rake db:create
 bundle exec rake db:migrate
+bundle exec rake db:seed
 ```
 
 ##### 3. Start server and try your services!
@@ -30,3 +31,10 @@ bundle exec rake db:migrate
 rails s
 ```
 ---
+
+#### 3. To edit or view the application secrets (You need access to master key and it can be found in our notion):
+
+```bash
+EDITOR="vim" rails credentials:edit
+rails credentials:show
+```

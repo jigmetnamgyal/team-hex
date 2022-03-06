@@ -2,6 +2,7 @@
   "version": 2,
   "projects": {
     "mint-check": "apps/mint-check",
-    "mint-check-e2e": "apps/mint-check-e2e"
+    "mint-check-e2e": "apps/mint-check-e2e",
+    "ui-kit": "libs/ui-kit"
   }
 }
