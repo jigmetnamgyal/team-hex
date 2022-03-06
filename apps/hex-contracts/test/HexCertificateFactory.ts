@@ -1,6 +1,7 @@
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { ethers, upgrades } from 'hardhat';
 import { HexCertificateFactory } from '../typechain';
+import { expect } from 'chai';
 
 describe('HexCertificateFactory', () => {
   let contract: HexCertificateFactory;
@@ -19,6 +20,7 @@ describe('HexCertificateFactory', () => {
     [admin, notAdmin] = await ethers.getSigners();
   });
 
+  // simple test cases
   describe('setBaseURI', () => {
     it('should only allow admin to mutate baseURI', async () => {
       contract = contract.connect(admin);
@@ -29,7 +31,7 @@ describe('HexCertificateFactory', () => {
     it('should revert when caller is not admin', async () => {
       contract = contract.connect(notAdmin);
 
-      expect(contract.setBaseURI('ipfs://cid_123/'))
+      expect(contract.setBaseURI('ipfs://cid_123/')).to.be.reverted;
     });
   });
 });
