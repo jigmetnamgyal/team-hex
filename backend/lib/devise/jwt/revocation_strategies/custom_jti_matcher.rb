@@ -19,8 +19,7 @@ module Devise
           before_create :initialize_jti
 
           # @see Warden::JWTAuth::Interfaces::RevocationStrategy#jwt_revoked?
-          def self.jwt_revoked?(payload, user)
-            payload['jti'] != user.jti
+          def self.jwt_revoked?(_payload, user) # rubocop:disable Metrics/MethodLength
           end
 
           # @see Warden::JWTAuth::Interfaces::RevocationStrategy#revoke_jwt
@@ -37,6 +36,7 @@ module Devise
         private
 
         def initialize_jti
+          binding.pry
           self.jti = signature
         end
       end
