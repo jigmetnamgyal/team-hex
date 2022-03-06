@@ -1,3 +1,5 @@
+require_relative '../../lib/devise/jwt/revocation_strategies/custom_jti_matcher'
+
 class User < ApplicationRecord
   devise(
     :database_authenticatable,
@@ -10,7 +12,7 @@ class User < ApplicationRecord
     jwt_revocation_strategy: self
   )
 
-  include Devise::JWT::RevocationStrategies::JTIMatcher
+  include Devise::JWT::RevocationStrategies::CustomJTIMatcher
 
   def email_required?
     false
@@ -29,6 +31,6 @@ class User < ApplicationRecord
   end
 
   def jwt_payload
-    { wallet_address: wallet_address }
+    super.merge!({ wallet_address: wallet_address })
   end
 end
