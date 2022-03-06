@@ -17,6 +17,7 @@ module Devise
 
         included do
           before_create :initialize_jti
+          # FIXME: What is the value of nonce ? Am I getting this from the FE?
 
           # @see Warden::JWTAuth::Interfaces::RevocationStrategy#jwt_revoked?
           def self.jwt_revoked?(payload, user) # rubocop:disable Metrics/MethodLength

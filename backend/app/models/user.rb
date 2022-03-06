@@ -3,8 +3,6 @@
 require_relative '../../lib/devise/jwt/revocation_strategies/custom_jti_matcher'
 
 class User < ApplicationRecord
-  attr_accessor :user
-
   devise(
     :database_authenticatable,
     :registerable,
