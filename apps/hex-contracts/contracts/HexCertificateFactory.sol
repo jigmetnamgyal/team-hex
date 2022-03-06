@@ -20,8 +20,6 @@ contract HexCertificateFactory is
     using Counters for Counters.Counter;
     using Strings for uint256;
 
-    address public serverAddress;
-
     address public treasuryAddress;
 
     string public baseURI;
