@@ -10,12 +10,6 @@ export interface DesktopNavProps {
   navigationItems: NavigationItems;
 }
 
-const MintCheckLink = React.forwardRef((props: any, ref) => (
-  <ChakraLink href={props.href} ref={ref} {...props}>
-    {props.label}
-  </ChakraLink>
-))
-
 export function DesktopNav({ navigationItems }: DesktopNavProps) {
   const linkColor = useColorModeValue('gray.600', 'gray.200');
   const linkHoverColor = useColorModeValue('gray.800', 'white');
