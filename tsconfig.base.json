@@ -10,14 +10,22 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2017", "dom"],
+    "lib": [
+      "es2017",
+      "dom"
+    ],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
       "@team-hex/fe-auth-profile": ["libs/fe-auth-profile/src/index.ts"],
-      "@team-hex/ui-kit": ["libs/ui-kit/src/index.ts"]
+      "@team-hex/ui-kit": [
+        "libs/ui-kit/src/index.ts"
+      ]
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
 }

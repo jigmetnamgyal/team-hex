@@ -1,16 +1,5 @@
 import './profile-card.module.scss';
-import {
-  Heading,
-  Avatar,
-  Box,
-  Center,
-  Text,
-  Stack,
-  Button,
-  Link,
-  Badge,
-  useColorModeValue,
-} from '@chakra-ui/react';
+import { Avatar, Box, Button, Center, Heading, Stack, Text, useColorModeValue } from '@chakra-ui/react';
 
 /* eslint-disable-next-line */
 export interface ProfileCardProps {

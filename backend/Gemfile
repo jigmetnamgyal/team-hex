@@ -8,6 +8,7 @@ ruby '3.0.3'
 gem 'bootsnap', '>= 1.4.4', require: false
 gem 'devise'
 gem 'devise-jwt'
+gem 'dotenv-rails'
 gem 'graphql'
 gem 'pg', '~> 1.1'
 gem 'puma', '~> 5.6.2'
@@ -23,4 +24,4 @@ group :development do
   gem 'spring'
 end
 
-gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
