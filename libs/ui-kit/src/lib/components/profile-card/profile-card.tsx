@@ -17,9 +17,10 @@ export interface ProfileCardProps {
   name?: string;
   address: string;
   avatar?: string;
+  collegeAssociation?: string;
 }
 
-export default function ProfileCard(props: ProfileCardProps) {
+export function ProfileCard({address, avatar, name = 'Unnamed', collegeAssociation}: ProfileCardProps) {
   return (
     <Center py={6}>
       <Box
@@ -32,9 +33,8 @@ export default function ProfileCard(props: ProfileCardProps) {
         textAlign={'center'}>
         <Avatar
           size={'xl'}
-          src={
-            'https://images.unsplash.com/photo-1520810627419-35e362c5dc07?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ'
-          }
+          src={avatar}
+          name={name}
           mb={4}
           pos={'relative'}
           _after={{
@@ -50,56 +50,19 @@ export default function ProfileCard(props: ProfileCardProps) {
           }}
         />
         <Heading fontSize={'2xl'} fontFamily={'body'}>
-          Lindsey James
+          {name}
         </Heading>
         <Text fontWeight={600} color={'gray.500'} mb={4}>
-          @lindsey_jam3s
+          {address}
         </Text>
         <Text
           textAlign={'center'}
           color={useColorModeValue('gray.700', 'gray.400')}
           px={3}>
-          Actress, musician, songwriter and artist. PM for work inquires or{' '}
-          <Link href={'#'} color={'blue.400'}>
-            #tag
-          </Link>{' '}
-          me in your posts
+          {collegeAssociation || 'Connecticut College'}
         </Text>
 
-        <Stack align={'center'} justify={'center'} direction={'row'} mt={6}>
-          <Badge
-            px={2}
-            py={1}
-            bg={useColorModeValue('gray.50', 'gray.800')}
-            fontWeight={'400'}>
-            #art
-          </Badge>
-          <Badge
-            px={2}
-            py={1}
-            bg={useColorModeValue('gray.50', 'gray.800')}
-            fontWeight={'400'}>
-            #photography
-          </Badge>
-          <Badge
-            px={2}
-            py={1}
-            bg={useColorModeValue('gray.50', 'gray.800')}
-            fontWeight={'400'}>
-            #music
-          </Badge>
-        </Stack>
-
         <Stack mt={8} direction={'row'} spacing={4}>
-          <Button
-            flex={1}
-            fontSize={'sm'}
-            rounded={'full'}
-            _focus={{
-              bg: 'gray.200',
-            }}>
-            Message
-          </Button>
           <Button
             flex={1}
             fontSize={'sm'}
@@ -115,10 +78,12 @@ export default function ProfileCard(props: ProfileCardProps) {
             _focus={{
               bg: 'blue.500',
             }}>
-            Follow
+            Edit Profile
           </Button>
         </Stack>
       </Box>
     </Center>
   );
 }
+
+export default ProfileCard;
