@@ -19,7 +19,23 @@ module Devise
           before_create :initialize_jti
 
           # @see Warden::JWTAuth::Interfaces::RevocationStrategy#jwt_revoked?
-          def self.jwt_revoked?(_payload, user) # rubocop:disable Metrics/MethodLength
+          def self.jwt_revoked?(payload, user) # rubocop:disable Metrics/MethodLength
+            uri = URI('https://team-hex.vercel.app/api/verify/signature')
+            http = Net::HTTP.new(uri.host, uri.port)
+            http.use_ssl = true
+
+            request = Net::HTTP::Post.new(uri.path, { 'Content-Type' => 'application/json' })
+            request.body = {
+              "nonce": {
+                "message": "Team Hex dApp\n\n We authorize universities with verified kyc to mint and issue certificates seamlessly.\n  \n  Nonce: 0x8a37f988803d7ee6101ae21998f69618219c0ea622ba7342fae0bfde3cd314b8\n  ",
+                "value": '0x5dC7e18022eec5b5f710cfb663088BCCCdB27fBb'
+              },
+              "signature": payload['jti'],
+              "wallet_address": user.wallet_address
+            }.to_json
+
+            response = http.request(request)
+            !JSON.parse(response.body)
           end
 
           # @see Warden::JWTAuth::Interfaces::RevocationStrategy#revoke_jwt
@@ -36,7 +52,6 @@ module Devise
         private
 
         def initialize_jti
-          binding.pry
           self.jti = signature
         end
       end

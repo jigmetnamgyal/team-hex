@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../../lib/devise/jwt/revocation_strategies/custom_jti_matcher'
 
 class User < ApplicationRecord
