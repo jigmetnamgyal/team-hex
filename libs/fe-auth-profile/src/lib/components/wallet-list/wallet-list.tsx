@@ -1,22 +1,19 @@
 import './wallet-list.module.scss';
 import { SelectionBox } from '@team-hex/ui-kit';
-import { Connector, useConnect } from 'wagmi';
+import { Connector, useConnect, useSignMessage } from 'wagmi';
 import { WALLET_LIST_CONSTANTS, WalletIdEnum } from '../../constants';
+import axios from 'axios';
 
 /* eslint-disable-next-line */
 export interface WalletListProps {
+  onConnect: (connector: Connector<any, any>) => void;
+  connectors: Connector<any, any>[];
 }
 
-export function WalletList(props: WalletListProps) {
-  const [{ data, error }, connect] = useConnect();
-  const onConnect = async (connector: Connector<any, any>) => {
-    const {data: accountData} = await connect(connector);
-    // TODO: hit SF when Will's PR gets merged.
-    console.log(accountData);
-  };
+export function WalletList({onConnect, connectors}: WalletListProps) {
   return (
     <>
-      {data.connectors.map((connector) => (
+      {connectors.map((connector) => (
         <SelectionBox
           onButtonClick={() => onConnect(connector)}
           key={connector.id}
