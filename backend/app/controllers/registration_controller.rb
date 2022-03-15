@@ -2,7 +2,7 @@
 
 class RegistrationController < Devise::RegistrationsController
   def create
-    render json: User.create!(registration_params.merge(signature: request.headers['signature']))
+    render json: User.create!(registration_params)
   end
 
   private
