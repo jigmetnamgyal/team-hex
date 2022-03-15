@@ -20,8 +20,6 @@ export function Index(props: ProfileProps) {
   const onConnect = async (connector: Connector<any, any>) => {
     const { data: accountData } = await connect(connector);
     const wallet_address = accountData?.account;
-    const { data } = await axios.post('http://localhost:4200/api/nonce', { wallet_address });
-    setNonce(data?.value);
   };
   if (accountData) {
     return (
