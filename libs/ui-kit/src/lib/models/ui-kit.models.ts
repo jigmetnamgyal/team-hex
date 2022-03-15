@@ -5,4 +5,11 @@ export interface NavigationItem {
   show?: boolean;
 }
 
+export enum ToastConfigs {
+  Success = 'success',
+  Error = 'error',
+  Info = 'info',
+  Warning = 'warning',
+}
+
 export type NavigationItems = NavigationItem[];

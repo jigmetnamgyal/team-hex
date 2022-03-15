@@ -3,13 +3,14 @@ import { Avatar, Box, Button, Center, Heading, Stack, Text, useColorModeValue } 
 
 /* eslint-disable-next-line */
 export interface ProfileCardProps {
+  onEditClick: () => void;
   name?: string;
   address: string;
   avatar?: string;
   collegeAssociation?: string;
 }
 
-export function ProfileCard({address, avatar, name = 'Unnamed', collegeAssociation}: ProfileCardProps) {
+export function ProfileCard({address, avatar, name = 'Unnamed', collegeAssociation, onEditClick}: ProfileCardProps) {
   return (
     <Center py={6}>
       <Box
@@ -66,7 +67,9 @@ export function ProfileCard({address, avatar, name = 'Unnamed', collegeAssociati
             }}
             _focus={{
               bg: 'blue.500',
-            }}>
+            }}
+            onClick={onEditClick}
+          >
             Edit Profile
           </Button>
         </Stack>

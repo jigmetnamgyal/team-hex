@@ -1,7 +1,7 @@
 import './profile-container.module.scss';
-import { ProfileCard } from '@team-hex/ui-kit';
-import { Button } from '@chakra-ui/react';
-import { useEffect } from 'react';
+import { getToastConfig, ProfileCard, ToastConfigs } from '@team-hex/ui-kit';
+import { useToast } from '@chakra-ui/react';
+import { useSignMessage } from 'wagmi';
 
 /* eslint-disable-next-line */
 export interface ProfileContainerProps {
@@ -9,11 +9,17 @@ export interface ProfileContainerProps {
   nonce: string | undefined;
 }
 
-export function ProfileContainer({address, nonce}: ProfileContainerProps) {
+export function ProfileContainer({ address, nonce }: ProfileContainerProps) {
+  const [{ data, error }, signMessage] = useSignMessage();
+  const toast = useToast();
+  const onEditClick = async () => {
+    await signMessage({ message: 'hellow  world'});
+    toast(getToastConfig('Logged In Successfully', ToastConfigs.Success));
+  };
 
   return (
     <div>
-      <ProfileCard address={address}/>
+      <ProfileCard onEditClick={onEditClick} address={address} />
     </div>
   );
 }

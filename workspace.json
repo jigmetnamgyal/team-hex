@@ -3,7 +3,6 @@
   "projects": {
     "fe-auth-profile": "libs/fe-auth-profile",
     "mint-check": "apps/mint-check",
-    "hex-contracts": "apps/hex-contracts",
     "mint-check-e2e": "apps/mint-check-e2e",
     "ui-kit": "libs/ui-kit"
   }
