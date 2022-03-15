@@ -5,6 +5,11 @@ require 'active_support/concern'
 module Devise
   module JWT
     module RevocationStrategies
+      # This custom revocation strategies works as follows:
+      # The payload received is sent to a serverless function that returns a boolean
+      # If false jwt is not revoked and user is allowed to perform the action in BE
+      # If true jwt is revoked and user is unauthorized to perform action
+
       module CustomMatcher
         extend ActiveSupport::Concern
 
