@@ -21,7 +21,10 @@ module Devise
 
             request = Net::HTTP::Post.new(uri.path, { 'Content-Type' => 'application/json' })
             request.body = {
-              "nonce": payload['nonce'],
+              "nonce": {
+                "message": payload['message'],
+                "value": payload['value']
+              },
               "signature": payload['signature'],
               "wallet_address": payload['wallet_address']
             }.to_json
