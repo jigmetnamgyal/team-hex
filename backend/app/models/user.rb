@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../../lib/devise/jwt/revocation_strategies/custom_jti_matcher'
+require_relative '../../lib/devise/jwt/revocation_strategies/custom_matcher'
 
 class User < ApplicationRecord
   devise(
@@ -14,7 +14,7 @@ class User < ApplicationRecord
     jwt_revocation_strategy: self
   )
 
-  include Devise::JWT::RevocationStrategies::CustomJTIMatcher
+  include Devise::JWT::RevocationStrategies::CustomMatcher
 
   def email_required?
     false
