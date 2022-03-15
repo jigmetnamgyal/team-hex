@@ -8,6 +8,12 @@ const getHeaderConfig = (headers: GetJwtPayload): AxiosRequestConfig => {
   }, { headers: {} });
 };
 
-const getJWT = (payload: GetJwtPayload) => {
-  return axios.post(`https://`, {}, getHeaderConfig(payload));
+const URL = 'https://shielded-refuge-48115.herokuapp.com/';
+
+export const getJWT = (payload: GetJwtPayload) => {
+  return axios.post(`${URL}/users`, {
+    user: {
+      wallet_address: payload.wallet_address
+    }
+  }, getHeaderConfig(payload));
 };
