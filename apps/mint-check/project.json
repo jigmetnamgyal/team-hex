@@ -19,6 +19,7 @@
       "executor": "@nrwl/next:server",
       "options": {
         "buildTarget": "mint-check:build",
+        "proxyConfig": "apps/mint-check/proxy.config.json",
         "dev": true
       },
       "configurations": {

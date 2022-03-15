@@ -1,5 +1,5 @@
 export interface GetJwtPayload {
-  message: string,
+  message?: string,
   value: string,
   signature: string,
   wallet_address: string

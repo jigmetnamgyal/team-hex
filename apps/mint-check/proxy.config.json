@@ -1,0 +1,6 @@
+{
+  "/users": {
+    "target": "https://shielded-refuge-48115.herokuapp.com",
+    "secure": false
+  }
+}

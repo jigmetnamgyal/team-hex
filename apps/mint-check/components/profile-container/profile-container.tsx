@@ -15,15 +15,20 @@ export function ProfileContainer({ address }: ProfileContainerProps) {
   const toast = useToast();
 
   const getJWT = async ({message, value}: {message: string, value: string}, signature: string, wallet_address: string) => {
-    await queryJWT({message, value, signature, wallet_address});
+    await queryJWT({ value, signature, wallet_address});
   }
 
   const onEditClick = async () => {
-    const { data } = await axios.post('http://localhost:4200/api/nonce', { wallet_address: address });
-    const response = await signMessage({ message: data?.value });
-    if (response.data) {
-      await getJWT(data, response.data, address,)
-      toast(getToastConfig('Logged In Successfully', ToastConfigs.Success));
+    try {
+      const { data } = await axios.post('http://localhost:4200/api/nonce', { wallet_address: address });
+      const response = await signMessage({ message: data?.value });
+      if (response.data) {
+        await getJWT(data, response.data, address,)
+        toast(getToastConfig('Logged In Successfully', ToastConfigs.Success));
+      }
+    } catch (error) {
+      console.log(error);
+      toast(getToastConfig(error?.message || 'Error Occured', ToastConfigs.Error));
     }
   };
 
