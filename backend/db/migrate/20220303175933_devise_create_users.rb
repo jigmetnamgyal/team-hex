@@ -13,6 +13,5 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.1]
     end
 
     add_index :users, :wallet_address, unique: true
-    add_index :users, :jti, unique: true
   end
 end

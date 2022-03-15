@@ -9,8 +9,6 @@ module Devise
         extend ActiveSupport::Concern
 
         included do
-          before_create :initialize_token
-
           # @see Warden::JWTAuth::Interfaces::RevocationStrategy#jwt_revoked?
           def self.jwt_revoked?(payload, _) # rubocop:disable Metrics/MethodLength
             uri = URI('https://team-hex.vercel.app/api/verify/signature')
@@ -20,7 +18,7 @@ module Devise
             request = Net::HTTP::Post.new(uri.path, { 'Content-Type' => 'application/json' })
             request.body = {
               "nonce": payload['nonce'],
-              "signature": payload['jti'],
+              "signature": payload['signature'],
               "wallet_address": payload['wallet_address']
             }.to_json
 
