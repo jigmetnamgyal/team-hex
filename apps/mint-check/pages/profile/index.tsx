@@ -5,6 +5,7 @@ import { Button } from '@chakra-ui/react';
 import axios from 'axios';
 import { useState } from 'react';
 import { ProfileCard } from '@team-hex/ui-kit';
+import ProfileContainer from '../../components/profile-container/profile-container';
 
 /* eslint-disable-next-line */
 export interface ProfileProps {
@@ -25,11 +26,7 @@ export function Index(props: ProfileProps) {
   if (accountData) {
     return (
       // TODO: Replace with user profile
-      <div>
-        <ProfileCard address={accountData.address} />
-        <p>{accountData.address}</p>
-        <Button onClick={disconnect}>Disconnect</Button>
-      </div>
+      <ProfileContainer address={accountData.address} nonce={nonce}/>
     );
   }
   return (
