@@ -12,10 +12,17 @@ export interface ProfileContainerProps {
 export function ProfileContainer({ address }: ProfileContainerProps) {
   const [{ data, error }, signMessage] = useSignMessage();
   const toast = useToast();
+
+  const getJWT = (data: {message: string, value: string}, signature: string, wallet_address: string) => {
+
+  }
   const onEditClick = async () => {
     const { data } = await axios.post('http://localhost:4200/api/nonce', { wallet_address: address });
-    const response = await signMessage({ message: data?.value});
-    if (response.data) toast(getToastConfig('Logged In Successfully', ToastConfigs.Success));
+    const response = await signMessage({ message: data?.value });
+    if (response.data) {
+      getJWT(data, response.data, address,)
+      toast(getToastConfig('Logged In Successfully', ToastConfigs.Success));
+    }
   };
 
   return (
