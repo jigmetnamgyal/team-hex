@@ -4,6 +4,8 @@ import './styles.css';
 import { ChakraProvider } from '@chakra-ui/react';
 import { NAVIGATION } from '../constants/mint-check.constants';
 import { Layout } from '@team-hex/ui-kit';
+import { Provider as WagmiProvider } from 'wagmi';
+import { connectors } from '../components/wagmi-set-up/wagmi-set-up';
 
 function CustomApp({ Component, pageProps }: AppProps) {
   return (
@@ -12,11 +14,13 @@ function CustomApp({ Component, pageProps }: AppProps) {
         <title>Welcome to mint-check!</title>
       </Head>
       <ChakraProvider>
-        <main className='app'>
-          <Layout navigationItems={NAVIGATION}>
-            <Component {...pageProps} />
-          </Layout>
-        </main>
+        <WagmiProvider connectors={connectors}>
+          <main className='app'>
+            <Layout navigationItems={NAVIGATION}>
+              <Component {...pageProps} />
+            </Layout>
+          </main>
+        </WagmiProvider>
       </ChakraProvider>
     </>
   );

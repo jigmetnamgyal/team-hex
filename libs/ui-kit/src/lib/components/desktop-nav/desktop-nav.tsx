@@ -2,6 +2,8 @@ import './desktop-nav.module.scss';
 import Link from 'next/link';
 import { Box, Link as ChakraLink, Popover, PopoverTrigger, Stack, useColorModeValue } from '@chakra-ui/react';
 import { NavigationItems } from '../../models';
+import React from 'react';
+import HexWrapperLink from '../hex-wrapper-link/hex-wrapper-link';
 
 /* eslint-disable-next-line */
 export interface DesktopNavProps {
@@ -17,19 +19,18 @@ export function DesktopNav({ navigationItems }: DesktopNavProps) {
         <Box key={navItem.label}>
           <Popover trigger={'hover'} placement={'bottom-start'}>
             <PopoverTrigger>
-              <Link href={navItem.href}>
-                <ChakraLink
+              <Link passHref href={navItem.href}>
+                <HexWrapperLink
                   p={2}
-                  href={navItem.href ?? '#'}
                   fontSize={'sm'}
                   fontWeight={500}
                   color={linkColor}
                   _hover={{
                     textDecoration: 'none',
                     color: linkHoverColor
-                  }}>
-                  {navItem.label}
-                </ChakraLink>
+                  }}
+                  label={navItem.label}
+                />
               </Link>
             </PopoverTrigger>
           </Popover>
