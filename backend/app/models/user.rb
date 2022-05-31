@@ -1,3 +1,7 @@
+# frozen_string_literal: true
+
+require_relative '../../lib/devise/jwt/revocation_strategies/custom_matcher'
+
 class User < ApplicationRecord
   devise(
     :database_authenticatable,
@@ -10,7 +14,9 @@ class User < ApplicationRecord
     jwt_revocation_strategy: self
   )
 
-  include Devise::JWT::RevocationStrategies::JTIMatcher
+  validates :wallet_address, presence: true
+
+  include Devise::Jwt::RevocationStrategies::CustomMatcher
 
   def email_required?
     false
@@ -26,9 +32,5 @@ class User < ApplicationRecord
 
   def password_required?
     false
-  end
-
-  def jwt_payload
-    { wallet_address: wallet_address }
   end
 end
