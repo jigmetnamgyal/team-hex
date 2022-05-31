@@ -3,7 +3,7 @@
 require 'active_support/concern'
 
 module Devise
-  module JWT
+  module Jwt
     module RevocationStrategies
       # This custom revocation strategies works as follows:
       # The payload received is sent to a serverless function that returns a boolean
@@ -15,16 +15,13 @@ module Devise
         included do
           # @see Warden::JWTAuth::Interfaces::RevocationStrategy#jwt_revoked?
           def self.jwt_revoked?(payload, _) # rubocop:disable Metrics/MethodLength Metrics/AbcSize
-            uri = URI('https://team-hex.vercel.app/api/verify/signature')
+            uri = URI('https://cert-tainty.vercel.app/api/verify')
             http = Net::HTTP.new(uri.host, uri.port)
             http.use_ssl = true
 
             request = Net::HTTP::Post.new(uri.path, { 'Content-Type' => 'application/json' })
             request.body = {
-              "nonce": {
-                "message": payload['message'],
-                "value": payload['value']
-              },
+              "message": payload['message'],
               "signature": payload['signature'],
               "wallet_address": payload['wallet_address']
             }.to_json

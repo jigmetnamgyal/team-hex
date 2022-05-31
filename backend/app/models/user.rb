@@ -16,7 +16,7 @@ class User < ApplicationRecord
 
   validates :wallet_address, presence: true
 
-  include Devise::JWT::RevocationStrategies::CustomMatcher
+  include Devise::Jwt::RevocationStrategies::CustomMatcher
 
   def email_required?
     false
